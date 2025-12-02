@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">HomePantry</string>
 
+    <!-- activity.main -->
+    <string name="txt_HomePantry">HomePantry</string>
+    <string name="txt_stock_produto">Stock Produto</string>
+    <string name="txt_listas">Listas</string>
+    <string name="txt_categorias">Categorias</string>
+    <string name="txt_locais">Locais</string>
+
+    <!-- criar_novo_utilizador -->
     <string name="txt_email">Email</string>
     <string name="txt_password">Password</string>
+
 </resources>
