@@ -3,13 +3,91 @@
 
     <!-- activity.main -->
     <string name="txt_HomePantry">HomePantry</string>
-    <string name="txt_stock_produto">Stock Produto</string>
+    <string name="txt_produto">Produtos</string>
     <string name="txt_listas">Listas</string>
     <string name="txt_categorias">Categorias</string>
     <string name="txt_locais">Locais</string>
 
+    <!-- Login -->
+    <string name="txt_Login">Login</string>
+
     <!-- criar_novo_utilizador -->
+    <string name="txt_titulo_criar_utilizador">Criar Novo Utilizador</string>
+    <string name="txt_nome_utilizador">Nome</string>
+    <string name="txt_apelido">Apelido</string>
     <string name="txt_email">Email</string>
     <string name="txt_password">Password</string>
+    <string name="btn_carregar_foto">Carregar Foto</string>
+
+    <!-- criar_nova_categoria -->
+    <string name="titulo_criar_categoria">Criar Nova Categoria</string>
+    <string name="label_nome_categoria">Nome da Categoria</string>
+    <string name="btn_carregar_foto_categoria">Carregar Foto Categoria</string>
+    <string name="btn_criar_categoria">Criar Categoria</string>
+
+    <!-- criar_novo_produto -->
+    <string name="titulo_criar_produto">Criar Novo Produto</string>
+    <string name="txt_nome_produto">Novo Produto</string>
+    <string name="txt_descricao">Novo Produto</string>
+    <string name="txt_unidade">Novo Produto</string>
+
+    <!-- Criar Produto -->
+    <string name="label_categoria">Categoria</string>
+    <string name="prompt_categoria">Selecione uma categoria</string>
+    <string name="btn_escolher_imagem_criar_produto">Escolher fotografia</string>
+    <string name="btn_guardar_produto">Guardar Produto</string>
+
+    <!-- criar_nova_casa -->
+    <string name="titulo_criar_casa">Criar Nova Casa</string>
+    <string name="imagem_criar_casa">Imagem Nova Casa</string>
+    <string name="hint_utilizador">Utilizador</string>
+    <string name="btn_carregar_foto_criar_casa">Carregar foto</string>
+    <string name="btn_criar_casa">Criar</string>
+
+    <!-- criar_novo_local -->
+    <string name="titulo_criar_local">Criar Novo Local</string>
+    <string name="hint_nome_local">Nome</string>
+    <string name="hint_casa_local">Casa</string>
+    <string name="btn_carregar_foto_novo_local">Carregar foto</string>
+    <string name="btn_criar_local">Criar</string>
+
+
+    <!-- gerir_produto -->
+    <string name="titulo_gerir_produto">Gerir Produto</string>
+    <string name="info_stock_preco">Stock atual:\nPreço:\nPreço total:</string>
+    <string name="label_validade">Validade</string>
+    <string name="btn_calendario">📅</string> <!-- ou "Data" se preferires texto -->
+    <string name="btn_atualizar">Atualizar</string>
+    <string name="btn_criar">Criar</string>
+    <string name="btn_alterar_foto">Alterar foto</string>
+    <string name="btn_saida">Saída</string>
+    <string name="btn_entrada">Entrada</string>
+    <string name="btn_historico">Histórico</string>
+    <string name="btn_alterar_preco">Alterar preço</string>
+    <string name="btn_novo">Novo</string>
+
+    <!-- Lista casa -->
+    <string name="titulo_lista_casas">Lista de casas</string>
+    <string name="desc_adicionar_casa">Adicionar nova casa</string>
+    <string name="desc_icone_casa">Abrir casa</string>
+
+    <!-- Lista compra -->
+    <string name="titulo_lista_compra">Lista de compra</string>
+    <string name="desc_remover_item">Remover item da lista</string>
+
+    <!-- Listas de compras -->
+    <string name="titulo_listas_compras">Listas de compras</string>
+    <string name="desc_adicionar_lista_compra">Adicionar nova lista de compras</string>
+
+    <!-- Listas de produtos -->
+    <string name="titulo_lista_produtos">Lista de produtos</string>
+    <string name="desc_adicionar_produto">Adicionar novo produto</string>
+
+    <!-- Listas de stock -->
+    <string name="titulo_lista_stock">Lista stock</string>
+
+    <!-- Listas de utilizadores -->
+    <string name="titulo_listas_utilizadores">Lista de utilizadores</string>
+    <string name="desc_adicionar_utilizador">Adicionar novo utilizador</string>
 
 </resources>

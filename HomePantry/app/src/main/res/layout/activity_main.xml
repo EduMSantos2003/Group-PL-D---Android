@@ -21,7 +21,9 @@
             android:layout_height="wrap_content"
             android:text="@string/txt_HomePantry"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:layout_marginBottom="24dp"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvEmail"
@@ -41,7 +43,7 @@
             android:id="@+id/btnStockProduto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/txt_stock_produto" />
+            android:text="@string/txt_produto" />
 
         <Button
             android:id="@+id/btnListas"
