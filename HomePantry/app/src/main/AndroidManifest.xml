@@ -26,6 +26,15 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <!-- LISTA DE PRODUTOS -->
+        <activity android:name=".ListasProdutosActivity" android:exported="false" />
+        <!-- LISTA DE COMPRAS -->
+        <activity android:name=".ListasComprasActivity" android:exported="false" />
+        <!-- LISTA DE CATEGORIAS -->
+        <activity android:name=".ListasCategoriasActivity" android:exported="false" />
+        <!-- LISTA DE LOCAIS -->
+        <activity android:name=".ListasLocaisActivity" android:exported="false" />
+
 
     </application>
 

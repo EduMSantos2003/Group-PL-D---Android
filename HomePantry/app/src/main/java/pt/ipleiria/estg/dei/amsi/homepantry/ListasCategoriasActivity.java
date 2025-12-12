@@ -1,4 +1,13 @@
 package pt.ipleiria.estg.dei.amsi.homepantry;
 
-public class ListasCategoriasActivity {
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ListasCategoriasActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_listas_categorias);
+    }
 }

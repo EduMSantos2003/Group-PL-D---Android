@@ -90,4 +90,13 @@
     <string name="titulo_listas_utilizadores">Lista de utilizadores</string>
     <string name="desc_adicionar_utilizador">Adicionar novo utilizador</string>
 
+    <!-- Listas de Locais -->
+    <string name="titulo_listas_locais">Listas de locais</string>
+    <string name="desc_adicionar_local">Adicionar novo local</string>
+
+    <!-- Listas de Categorias -->
+    <string name="titulo_listas_categorias">Listas de categorias</string>
+    <string name="desc_adicionar_categoria">Adicionar nova categoria</string>
+
+
 </resources>
