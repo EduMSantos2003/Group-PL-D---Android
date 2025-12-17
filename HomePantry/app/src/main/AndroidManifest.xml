@@ -27,13 +27,25 @@
             android:name=".MainActivity"
             android:exported="false" />
         <!-- LISTA DE PRODUTOS -->
-        <activity android:name=".ListasProdutosActivity" android:exported="false" />
+        <activity android:name=".ListasProdutosActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <!-- LISTA DE COMPRAS -->
-        <activity android:name=".ListasComprasActivity" android:exported="false" />
+        <activity android:name=".ListasComprasActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <!-- LISTA DE CATEGORIAS -->
-        <activity android:name=".ListasCategoriasActivity" android:exported="false" />
+        <activity android:name=".ListasCategoriasActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
         <!-- LISTA DE LOCAIS -->
-        <activity android:name=".ListasLocaisActivity" android:exported="false" />
+        <activity android:name=".ListasLocaisActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
 
 
     </application>

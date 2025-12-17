@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.HomeFragment"
+        android:label="Início" />
+
+    <fragment
+        android:id="@+id/produtosFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ProdutosFragment"
+        android:label="Produtos / Stock" />
+
+    <fragment
+        android:id="@+id/comprasFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ComprasFragment"
+        android:label="Listas de compras" />
+
+    <fragment
+        android:id="@+id/categoriasFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CategoriasFragment"
+        android:label="Categorias" />
+
+    <fragment
+        android:id="@+id/locaisFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.LocaisFragment"
+        android:label="Locais" />
+
+</navigation>

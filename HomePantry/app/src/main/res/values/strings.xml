@@ -2,7 +2,7 @@
     <string name="app_name">HomePantry</string>
 
     <!-- activity.main -->
-    <string name="txt_HomePantry">HomePantry</string>
+    <string name="txt_HomePantry">Bem-Vindo\nHomePantry</string>
     <string name="txt_produto">Produtos</string>
     <string name="txt_listas">Listas</string>
     <string name="txt_categorias">Categorias</string>
@@ -71,8 +71,8 @@
     <string name="desc_adicionar_casa">Adicionar nova casa</string>
     <string name="desc_icone_casa">Abrir casa</string>
 
-    <!-- Lista compra -->
-    <string name="titulo_lista_compra">Lista de compra</string>
+    <!-- Lista compras -->
+    <string name="titulo_lista_compra">Lista de compras</string>
     <string name="desc_remover_item">Remover item da lista</string>
 
     <!-- Listas de compras -->
@@ -97,6 +97,8 @@
     <!-- Listas de Categorias -->
     <string name="titulo_listas_categorias">Listas de categorias</string>
     <string name="desc_adicionar_categoria">Adicionar nova categoria</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

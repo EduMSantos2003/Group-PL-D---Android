@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".GerirProdutoFragment">
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/layout_gerir_produto"
@@ -59,10 +56,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Nome do Produto">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_nome_produto_g"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_nome_produto_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Descrição -->
@@ -74,12 +71,12 @@
                 android:layout_marginTop="8dp"
                 android:hint="Descrição">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_descricao_produto_g"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:minLines="2"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_descricao_produto_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:minLines="2"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Preço -->
@@ -91,11 +88,11 @@
                 android:layout_marginTop="8dp"
                 android:hint="Preço do Produto">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_preco_produto_g"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_preco_produto_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Validade + calendário -->
@@ -206,7 +203,6 @@
                     android:layout_marginStart="8dp"
                     android:text="@string/btn_novo"/>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
