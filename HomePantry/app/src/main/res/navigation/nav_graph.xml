@@ -2,31 +2,36 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/ListaProdutosFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="pt.ipleiria.estg.dei.amsi.homepantry.HomeFragment"
-        android:label="Início" />
+        android:id="@+id/ListaProdutosFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaProdutosFragment"
+        android:label="Produtos / Stock">
+
+        <action
+            android:id="@+id/action_listaProdutos_to_gerirProduto"
+            app:destination="@id/gerirProdutoFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/produtosFragment"
-        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ProdutosFragment"
-        android:label="Produtos / Stock" />
+        android:id="@+id/gerirProdutoFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.GerirProdutoFragment"
+        android:label="Gerir Produto" />
 
     <fragment
-        android:id="@+id/comprasFragment"
-        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ComprasFragment"
+        android:id="@+id/ListaComprasFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaComprasFragment"
         android:label="Listas de compras" />
 
     <fragment
-        android:id="@+id/categoriasFragment"
-        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CategoriasFragment"
+        android:id="@+id/ListaCategoriasFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaCategoriasFragment"
         android:label="Categorias" />
 
     <fragment
-        android:id="@+id/locaisFragment"
-        android:name="pt.ipleiria.estg.dei.amsi.homepantry.LocaisFragment"
+        android:id="@+id/ListaLocaisFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaLocaisFragment"
         android:label="Locais" />
 
 </navigation>

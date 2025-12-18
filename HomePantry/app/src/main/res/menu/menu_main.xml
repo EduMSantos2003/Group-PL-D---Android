@@ -2,25 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/homeFragment"
-            android:title="Início" />
 
         <item
-            android:id="@+id/produtosFragment"
+            android:id="@+id/ListaProdutosFragment"
             android:title="Produtos / Stock" />
 
         <item
-            android:id="@+id/comprasFragment"
+            android:id="@+id/ListaComprasFragment"
             android:title="Listas de compras" />
 
         <item
-            android:id="@+id/categoriasFragment"
+            android:id="@+id/ListaCategoriasFragment"
             android:title="Categorias" />
 
         <item
-            android:id="@+id/locaisFragment"
+            android:id="@+id/ListaLocaisFragment"
             android:title="Locais" />
+
     </group>
 
 </menu>

@@ -6,16 +6,15 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnStockProduto;
-    private Button btnListas;
-    private Button btnCategorias;
-    private Button btnLocais;
+    public static final String EXTRA_DESTINO = "DESTINO_FRAGMENT";
+
+    public Button btnStockProduto;
+    public Button btnListaCompras;
+    public Button btnCategorias;
+    public Button btnLocais;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,42 +22,22 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        // 1) Ligar aos botões do XML
+        // IDs dos botões do activity_main.xml
         btnStockProduto = findViewById(R.id.btnStockProduto);
-        btnListas       = findViewById(R.id.btnListas);
+        btnListaCompras = findViewById(R.id.btnListaCompras);
         btnCategorias   = findViewById(R.id.btnCategorias);
         btnLocais       = findViewById(R.id.btnLocais);
 
-        // 2) Definir ações de cada botão
+        // Button  redirecionar para o fragment
+        btnStockProduto.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaProdutosFragment));
+        btnListaCompras.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaComprasFragment));
+        btnCategorias.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaCategoriasFragment));
+        btnLocais.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaLocaisFragment));
+    }
 
-        // Produto / Stock
-        btnStockProduto.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ListasProdutosActivity.class);
-            startActivity(intent);
-        });
-
-        // Listas de compras
-        btnListas.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ListasComprasActivity.class);
-            startActivity(intent);
-        });
-
-        // Categorias
-        btnCategorias.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ListasCategoriasActivity.class);
-            startActivity(intent);
-        });
-
-        // Locais
-        btnLocais.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ListasLocaisActivity.class);
-            startActivity(intent);
-        });
+    private void abrirMenuComDestino(int destinoId) {
+        Intent intent = new Intent(this, MenuMainActivity.class);
+        intent.putExtra(EXTRA_DESTINO, destinoId);
+        startActivity(intent);
     }
 }
