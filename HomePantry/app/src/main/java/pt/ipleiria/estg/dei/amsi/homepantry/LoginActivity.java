@@ -39,15 +39,14 @@ public class LoginActivity extends AppCompatActivity {
             // NÃO abre Main automaticamente
         }
 
-
-
         // ➤ Clicar em LOGIN
         btnLogin.setOnClickListener(view -> doLogin());
 
-        // ➤ Clicar em NEW USER (ainda não implementado)
-        btnRegister.setOnClickListener(view ->
-                Toast.makeText(this, "Registo ainda não implementado", Toast.LENGTH_SHORT).show()
-        );
+        // ➤ Clicar em NOVO UTILIZADOR (ainda não implementado)
+//        btnRegister.setOnClickListener(view ->
+//                Toast.makeText(this, "Registo ainda não implementado", Toast.LENGTH_SHORT).show()
+//        );
+        btnRegister.setOnClickListener(view -> abrirCriarNovoUtilizador());
     }
 
     // Função chamada ao clicar em LOGIN
@@ -74,10 +73,18 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    // Mudar para a MainActivity
+    // Mudar para a MenuMainActivity
     private void abrirMain() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, MenuMainActivity.class);
         startActivity(i);
         finish(); // impede voltar ao login com back
     }
+
+    private void abrirCriarNovoUtilizador() {
+        Intent i = new Intent(this, MenuMainActivity.class);
+        i.putExtra(MainActivity.EXTRA_DESTINO, R.id.CriarNovoUtilizadorFragment);
+        startActivity(i);
+    }
+
+
 }

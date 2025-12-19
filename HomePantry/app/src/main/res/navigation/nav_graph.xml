@@ -34,4 +34,10 @@
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaLocaisFragment"
         android:label="Locais" />
 
+    <fragment
+        android:id="@+id/CriarNovoUtilizadorFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CriarNovoUtilizadorFragment"
+        android:label="Criar novo utilizador" />
+
+
 </navigation>
