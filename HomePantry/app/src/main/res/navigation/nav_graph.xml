@@ -12,12 +12,17 @@
         <action
             android:id="@+id/action_listaProdutos_to_gerirProduto"
             app:destination="@id/gerirProdutoFragment" />
+
+        <action
+            android:id="@+id/action_listaProdutos_to_criarNovoProduto"
+            app:destination="@id/CriarNovoProdutoFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/gerirProdutoFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.GerirProdutoFragment"
         android:label="Gerir Produto" />
+
 
     <fragment
         android:id="@+id/ListaComprasFragment"
@@ -27,17 +32,42 @@
     <fragment
         android:id="@+id/ListaCategoriasFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaCategoriasFragment"
-        android:label="Categorias" />
+        android:label="Categorias">
+
+        <action
+            android:id="@+id/action_listaCategorias_to_criarNovaCategoria"
+            app:destination="@id/CriarNovaCategoriaFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/CriarNovaCategoriaFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CriarNovaCategoriaFragment"
+        android:label="Criar nova categoria" />
+
 
     <fragment
         android:id="@+id/ListaLocaisFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaLocaisFragment"
-        android:label="Locais" />
+        android:label="Locais">
+
+        <action
+            android:id="@+id/action_listaLocais_to_criarNovoLocal"
+            app:destination="@id/CriarNovoLocalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CriarNovoLocalFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CriarNovoLocalFragment"
+        android:label="Criar novo local" />
+
 
     <fragment
         android:id="@+id/CriarNovoUtilizadorFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.CriarNovoUtilizadorFragment"
         android:label="Criar novo utilizador" />
 
+    <fragment
+        android:id="@+id/CriarNovoProdutoFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.CriarNovoProdutoFragment"
+        android:label="Criar novo produto" />
 
 </navigation>

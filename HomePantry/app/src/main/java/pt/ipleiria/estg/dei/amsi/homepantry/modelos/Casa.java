@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-// Entidade Room que representa a tabela "categoria" na BD local
-@Entity(tableName = "categoria")
-public class Categoria {
+// Entidade Room que representa a tabela "casa" na BD local
+@Entity(tableName = "casa")
+public class Casa {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -14,11 +14,11 @@ public class Categoria {
     private String nome;
 
     // Construtor vazio obrigatório para o Room
-    public Categoria() {
+    public Casa() {
     }
 
     // Construtor opcional, útil se quiseres criar objetos manualmente
-    public Categoria(int id, String nome) {
+    public Casa(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }
@@ -39,7 +39,7 @@ public class Categoria {
         this.nome = nome;
     }
 
-    // O Spinner vai usar este texto para mostrar cada categoria
+    // O dropdown (AutoCompleteTextView) usa este texto para mostrar cada Casa
     @NonNull
     @Override
     public String toString() {

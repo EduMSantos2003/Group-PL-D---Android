@@ -41,7 +41,7 @@
                 android:layout_marginTop="8dp"/>
 
             <Spinner
-                android:id="@+id/spinner_categoria"
+                android:id="@+id/dropdown_escolher_categoria"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:prompt="@string/prompt_categoria"/>
