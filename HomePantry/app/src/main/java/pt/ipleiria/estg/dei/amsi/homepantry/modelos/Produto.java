@@ -1,56 +1,37 @@
 package pt.ipleiria.estg.dei.amsi.homepantry.modelos;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
-@Entity(
-        tableName = "produtos",
-        foreignKeys = @ForeignKey(
-                entity = Categoria.class,
-                parentColumns = "id",
-                childColumns = "categoria_id",
-                onDelete = ForeignKey.CASCADE
-        ),
-        indices = {@Index(value = "categoria_id")}
-)
 public class Produto {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-
-    @ColumnInfo(name = "categoria_id")
-    private int categoriaId;
-
+    private int id;              // vem da API (GET)
+    private int categoriaId;     // categoria_id no JSON
     private String nome;
-
     private String descricao;
-
-    // Na tua BD é INT
     private int unidade;
-
-    // decimal(10,2) -> no Room usa-se normalmente double ou BigDecimal (double é o mais comum em projetos académicos)
     private double preco;
+    private String validade;     // yyyy-MM-dd
+    private String imagem;       // opcional (URL ou nome do ficheiro)
 
-    // DATE -> vamos guardar como String "yyyy-MM-dd" para evitar TypeConverters
-    private String validade;
+    // 🔹 CONSTRUTOR PARA POST (SEM ID)
+    public Produto(String nome,
+                   String descricao,
+                   int unidade,
+                   double preco,
+                   String validade,
+                   int categoriaId) {
 
-    private String imagem;
-
-    // Construtor (sem id porque é auto-increment)
-    public Produto(int categoriaId, String nome, String descricao, int unidade, double preco, String validade, String imagem) {
-        this.categoriaId = categoriaId;
         this.nome = nome;
         this.descricao = descricao;
         this.unidade = unidade;
         this.preco = preco;
         this.validade = validade;
-        this.imagem = imagem;
+        this.categoriaId = categoriaId;
     }
 
-    // Getters/Setters
+    // 🔹 CONSTRUTOR VAZIO (OBRIGATÓRIO para JSON parsing)
+    public Produto() {}
+
+    // 🔹 GETTERS & SETTERS
+
     public int getId() {
         return id;
     }

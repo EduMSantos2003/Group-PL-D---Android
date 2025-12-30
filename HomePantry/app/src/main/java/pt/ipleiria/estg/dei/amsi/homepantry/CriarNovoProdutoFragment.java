@@ -18,158 +18,87 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ipleiria.estg.dei.amsi.homepantry.data.AppDatabase;
-import pt.ipleiria.estg.dei.amsi.homepantry.data.CategoriaDao;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.ProdutoDao;
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.ProdutoListener;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CriarNovoProdutoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CriarNovoProdutoFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // Views
+    private Spinner spinnerCategorias;
+    private EditText txtNome, txtDescricao, txtUnidade, txtPreco, txtValidade;
+    private Button btnEscolherImagem, btnGuardarProduto;
 
-    // Valores opcionais de inicialização do fragment
-    private String mParam1;
-    private String mParam2;
-
-    // Views do layout
-    private Spinner dropdown_escolher_categoria;
-    private EditText txtNome;
-    private EditText txtDescricao;
-    private EditText txtUnidade;
-    private EditText txtPreco;
-    private EditText txtValidade;
-    private Button btnEscolherImagem;
-    private Button btnGuardarProduto;
-
-    // Lista de categorias vindas da BD local (Room)
+    // Dados
     private List<Categoria> listaCategorias = new ArrayList<>();
-
-    // Guarda o ID da categoria selecionada (FK do produto)
     private int idCategoriaSelecionada = -1;
 
     public CriarNovoProdutoFragment() {
-        // Required empty public constructor
-    }
-
-    public static CriarNovoProdutoFragment newInstance(String param1, String param2) {
-        CriarNovoProdutoFragment fragment = new CriarNovoProdutoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Lê os parâmetros, se tiverem sido passados na criação do fragment
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        // obrigatório
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        // Infla o layout fragment_criar_novo_produto
         return inflater.inflate(R.layout.fragment_criar_novo_produto, container, false);
     }
 
-    // Aqui é onde ligamos o layout às variáveis Java e tornamos o formulário funcional
     @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1) Ligar as views do XML às variáveis Java
-        dropdown_escolher_categoria = view.findViewById(R.id.dropdown_escolher_categoria);
-        txtNome           = view.findViewById(R.id.txt_nome);
-        txtDescricao      = view.findViewById(R.id.txt_descricao);
-        txtUnidade        = view.findViewById(R.id.txt_unidade);
-        txtPreco          = view.findViewById(R.id.txt_preco);
-        txtValidade       = view.findViewById(R.id.txt_validade);
+        // Ligar views
+        spinnerCategorias = view.findViewById(R.id.dropdown_escolher_categoria);
+        txtNome = view.findViewById(R.id.txt_nome);
+        txtDescricao = view.findViewById(R.id.txt_descricao);
+        txtUnidade = view.findViewById(R.id.txt_unidade);
+        txtPreco = view.findViewById(R.id.txt_preco);
+        txtValidade = view.findViewById(R.id.txt_validade);
         btnEscolherImagem = view.findViewById(R.id.btn_escolher_imagem);
         btnGuardarProduto = view.findViewById(R.id.btn_guardar_produto);
 
-        // 2) Carregar a lista de categorias da base de dados (Room)
-        CategoriaDao categoriaDao = AppDatabase
-                .getInstance(requireContext())
-                .categoriaDao();
+        carregarCategoriasFake(); // ⚠️ temporário até ligares API categorias
 
-        categoriaDao.getAllCategorias()
-                .observe(getViewLifecycleOwner(), categorias -> {
-
-                    // Garante que nunca ficas com lista null
-                    if (categorias == null) {
-                        listaCategorias = new ArrayList<>();
-                    } else {
-                        listaCategorias = categorias;
-                    }
-
-                    // Adapter para mostrar as categorias no Spinner
-                    ArrayAdapter<Categoria> adapter = new ArrayAdapter<>(
-                            requireContext(),
-                            android.R.layout.simple_spinner_item,
-                            listaCategorias
-                    );
-                    adapter.setDropDownViewResource(
-                            android.R.layout.simple_spinner_dropdown_item
-                    );
-
-                    dropdown_escolher_categoria.setAdapter(adapter);
-
-                    // Se existir pelo menos uma categoria, selecionar a primeira
-                    if (!listaCategorias.isEmpty()) {
-                        dropdown_escolher_categoria.setSelection(0);
-                        idCategoriaSelecionada = listaCategorias.get(0).getId();
-                    }
-                });
-
-        // 3) Listener do Spinner para saber que categoria o utilizador escolheu
-        dropdown_escolher_categoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent,
-                                       View viewSelecionado,
+                                       View view,
                                        int position,
                                        long id) {
-                Categoria categoria = (Categoria) parent.getItemAtPosition(position);
-                idCategoriaSelecionada = categoria.getId();
+                Categoria c = (Categoria) parent.getItemAtPosition(position);
+                idCategoriaSelecionada = c.getId();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Nada a fazer aqui na maioria dos casos
+                idCategoriaSelecionada = -1;
             }
         });
 
-        // 4) Clique no botão "Escolher imagem"
         btnEscolherImagem.setOnClickListener(v ->
                 Toast.makeText(requireContext(),
-                        "Funcionalidade de escolher imagem ainda por implementar.",
+                        "Imagem ainda não implementada",
                         Toast.LENGTH_SHORT).show()
         );
 
-        // 5) Clique no botão "GUARDAR PRODUTO"
         btnGuardarProduto.setOnClickListener(v -> guardarProduto());
     }
 
-    // 6) Método que lê os campos do formulário e (por enquanto) apenas valida e mostra um Toast
+    // ==========================================================
+    // 🔥 MÉTODO CRÍTICO – POST PARA A API
+    // ==========================================================
     private void guardarProduto() {
 
-        String nome      = txtNome.getText().toString().trim();
+        String nome = txtNome.getText().toString().trim();
         String descricao = txtDescricao.getText().toString().trim();
-        String unidade   = txtUnidade.getText().toString().trim();
-        String precoStr  = txtPreco.getText().toString().trim();
-        String validade  = txtValidade.getText().toString().trim();
+        String unidadeStr = txtUnidade.getText().toString().trim();
+        String precoStr = txtPreco.getText().toString().trim();
+        String validade = txtValidade.getText().toString().trim();
 
+        // Validações
         if (nome.isEmpty()) {
             txtNome.setError("Obrigatório");
             txtNome.requestFocus();
@@ -184,8 +113,17 @@ public class CriarNovoProdutoFragment extends Fragment {
 
         if (idCategoriaSelecionada == -1) {
             Toast.makeText(requireContext(),
-                    "Escolhe uma categoria.",
+                    "Escolhe uma categoria",
                     Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int unidade = 0;
+        try {
+            if (!unidadeStr.isEmpty())
+                unidade = Integer.parseInt(unidadeStr);
+        } catch (NumberFormatException e) {
+            txtUnidade.setError("Número inválido");
             return;
         }
 
@@ -194,24 +132,70 @@ public class CriarNovoProdutoFragment extends Fragment {
             preco = Double.parseDouble(precoStr);
         } catch (NumberFormatException e) {
             txtPreco.setError("Preço inválido");
-            txtPreco.requestFocus();
             return;
         }
 
-        // TODO: quando tiveres entidade Produto e ProdutoDao,
-        //       cria o objeto e insere na BD (Room).
-        //
-        // Produto p = new Produto(nome, descricao, unidade, preco, validade, idCategoriaSelecionada);
-        // AppDatabase.getInstance(requireContext()).produtoDao().insert(p);
+        // Criar objeto Produto (PURO – SEM ROOM)
+        Produto produto = new Produto(
+                nome,
+                descricao,
+                unidade,
+                preco,
+                validade,
+                idCategoriaSelecionada
+        );
 
-        String msg = "Produto: " + nome +
-                "\nCategoria ID: " + idCategoriaSelecionada +
-                "\nPreço: " + preco +
-                "\nQuantidade: " + unidade +
-                "\nValidade: " + validade;
+        ProdutoDao produtoDao = new ProdutoDao();
 
-        Toast.makeText(requireContext(),
-                "Guardado (simulação):\n" + msg,
-                Toast.LENGTH_LONG).show();
+        produtoDao.criarProduto(produto, new ProdutoListener() {
+            @Override
+            public void onProdutoCreated(Produto produtoCriado) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireContext(),
+                            "Produto criado com sucesso!",
+                            Toast.LENGTH_SHORT).show();
+                    limparFormulario();
+                });
+            }
+
+            @Override
+            public void onProdutoError(String erro) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                "Erro: " + erro,
+                                Toast.LENGTH_LONG).show()
+                );
+            }
+        });
+    }
+
+    // ==========================================================
+    // Auxiliares
+    // ==========================================================
+    private void limparFormulario() {
+        txtNome.setText("");
+        txtDescricao.setText("");
+        txtUnidade.setText("");
+        txtPreco.setText("");
+        txtValidade.setText("");
+        spinnerCategorias.setSelection(0);
+    }
+
+    // TEMPORÁRIO (até ligares API de categorias)
+    private void carregarCategoriasFake() {
+        listaCategorias.clear();
+        listaCategorias.add(new Categoria(1, "Laticínios"));
+        listaCategorias.add(new Categoria(2, "Bebidas"));
+        listaCategorias.add(new Categoria(3, "Cereais"));
+
+        ArrayAdapter<Categoria> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                listaCategorias
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategorias.setAdapter(adapter);
+
+        idCategoriaSelecionada = listaCategorias.get(0).getId();
     }
 }

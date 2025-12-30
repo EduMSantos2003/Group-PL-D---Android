@@ -5,7 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.AutoCompleteTextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,48 +19,22 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ipleiria.estg.dei.amsi.homepantry.data.AppDatabase;
-
-import pt.ipleiria.estg.dei.amsi.homepantry.data.CasaDao;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Casa;
 
 public class CriarNovoLocalFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // Views
+    private AutoCompleteTextView spinnerCasas;
 
-    private String mParam1;
-    private String mParam2;
+    private EditText txtNomeLocal;
+    private Button btnGuardarLocal;
 
-    // Dropdown onde vamos mostrar as casas
-    private AutoCompleteTextView autoCasaLocal;
-
-    // Lista onde vamos guardar as casas lidas da Base de Dados
+    // Dados
     private List<Casa> listaCasas = new ArrayList<>();
-
-    // Variável para guardar o ID da casa escolhida (vai ser a FK ao gravar o Local)
     private int idCasaSelecionada = -1;
 
     public CriarNovoLocalFragment() {
-        // Required empty public constructor
-    }
-
-    public static CriarNovoLocalFragment newInstance(String param1, String param2) {
-        CriarNovoLocalFragment fragment = new CriarNovoLocalFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        // obrigatório
     }
 
     @Override
@@ -70,38 +49,80 @@ public class CriarNovoLocalFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1) Ligar o AutoCompleteTextView do XML à variável Java
-        autoCasaLocal = view.findViewById(R.id.auto_casa_local);
+        // Ligar views
+        spinnerCasas = view.findViewById(R.id.auto_casa_local);
+        txtNomeLocal = view.findViewById(R.id.edt_nome_local);
+        btnGuardarLocal = view.findViewById(R.id.btn_criar_local);
 
-        // 2) Ir buscar o DAO da tabela Casa (Room)
-        CasaDao casaDao = AppDatabase.getInstance(requireContext()).casaDao();
+        // ⚠️ TEMPORÁRIO — dados fake (até ligares API)
+        carregarCasasFake();
 
-        // 3) Fazer a query à BD para obter todas as Casas (LiveData)
-        casaDao.getAllCasas().observe(getViewLifecycleOwner(), casas -> {
-            // 4) Guardar a lista vinda da BD na nossa variável
-            listaCasas = casas;
-
-            // 5) Criar um adapter para transformar a lista em itens visíveis no dropdown
-            ArrayAdapter<Casa> adapter = new ArrayAdapter<>(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    listaCasas
-            );
-
-            // 6) Aplicar o adapter ao AutoCompleteTextView (isto “enche” o dropdown)
-            autoCasaLocal.setAdapter(adapter);
-
-            // opcional: selecionar logo a primeira casa
-            if (!listaCasas.isEmpty()) {
-                autoCasaLocal.setText(listaCasas.get(0).toString(), false);
-                idCasaSelecionada = listaCasas.get(0).getId();
-            }
+        // ✅ LISTENER CERTO PARA AutoCompleteTextView
+        spinnerCasas.setOnItemClickListener((parent, view1, position, id) -> {
+            Casa casa = (Casa) parent.getItemAtPosition(position);
+            idCasaSelecionada = casa.getId();
         });
 
-        // 7) Listener: detetar quando o utilizador escolhe uma casa
-        autoCasaLocal.setOnItemClickListener((parent, viewSelecionado, position, id) -> {
-            Casa casaSelecionada = (Casa) parent.getItemAtPosition(position);
-            idCasaSelecionada = casaSelecionada.getId();
-        });
+        btnGuardarLocal.setOnClickListener(v -> guardarLocal());
+    }
+
+
+    // ======================================================
+    // MÉTODO CRÍTICO — GUARDAR LOCAL (API no futuro)
+    // ======================================================
+    private void guardarLocal() {
+
+        String nomeLocal = txtNomeLocal.getText().toString().trim();
+
+        if (nomeLocal.isEmpty()) {
+            txtNomeLocal.setError("Obrigatório");
+            txtNomeLocal.requestFocus();
+            return;
+        }
+
+        if (idCasaSelecionada == -1) {
+            Toast.makeText(requireContext(),
+                    "Escolhe uma casa",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 🔥 POR AGORA: apenas simulação
+        String msg = "Local: " + nomeLocal +
+                "\nCasa ID: " + idCasaSelecionada;
+
+        Toast.makeText(requireContext(),
+                "Guardado (simulação):\n" + msg,
+                Toast.LENGTH_LONG).show();
+
+        limparFormulario();
+    }
+
+    // ======================================================
+    // AUXILIARES
+    // ======================================================
+    private void limparFormulario() {
+        txtNomeLocal.setText("");
+        spinnerCasas.setSelection(0);
+    }
+
+    // ⚠️ TEMPORÁRIO — até ligares API de Casas
+    private void carregarCasasFake() {
+        listaCasas.clear();
+        listaCasas.add(new Casa(1, "Casa Principal"));
+        listaCasas.add(new Casa(2, "Casa da Praia"));
+        listaCasas.add(new Casa(3, "Casa dos Pais"));
+
+        ArrayAdapter<Casa> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                listaCasas
+        );
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        spinnerCasas.setAdapter(adapter);
+
+        idCasaSelecionada = listaCasas.get(0).getId();
     }
 }
