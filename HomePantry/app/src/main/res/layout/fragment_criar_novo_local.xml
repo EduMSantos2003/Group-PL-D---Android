@@ -1,99 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".CriarNovoProdutoFragment">
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scroll_criar_local"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
-            android:id="@+id/layout_criar_local"
+        <!-- TÍTULO -->
+        <TextView
+            android:id="@+id/txt_titulo_criar_local"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="32dp">
+            android:text="@string/titulo_criar_local"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
-            <!-- Título -->
-            <TextView
-                android:id="@+id/txt_titulo_criar_local"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/titulo_criar_local"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+        <!-- NOME DO LOCAL -->
+        <EditText
+            android:id="@+id/edt_nome_local"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_nome_local"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp" />
 
-            <!-- Área da imagem -->
-            <ImageView
-                android:id="@+id/imagem_criar_local"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:scaleType="centerInside" />
+        <!-- DESCRIÇÃO DO LOCAL -->
+        <EditText
+            android:id="@+id/edt_descricao_local"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_descricao_local"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="16dp" />
 
-            <!-- Botão carregar foto -->
-            <Button
-                android:id="@+id/btn_carregar_foto_local"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_gravity="end"
-                android:layout_marginBottom="24dp"
-                android:paddingHorizontal="16dp"
-                android:text="@string/btn_carregar_foto_novo_local"
-                android:textAllCaps="true"
-                android:textSize="12sp"/>
+        <!-- PREVIEW DA FOTO -->
+        <ImageView
+            android:id="@+id/img_foto_local"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginBottom="12dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray" />
 
-            <!-- Campo Nome -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_nome_local"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/hint_nome_local">
+        <!-- BOTÃO FOTO (OPCIONAL, SEM LÓGICA AINDA) -->
+        <Button
+            android:id="@+id/btn_carregar_foto_novo_local"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_carregar_foto_novo_local"
+            android:layout_marginBottom="16dp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_nome_local"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </com.google.android.material.textfield.TextInputLayout>
+        <!-- BOTÃO CRIAR -->
+        <Button
+            android:id="@+id/btn_criar_local"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_criar_local" />
 
-            <!-- Campo Casa (dropdown) -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_casa_local"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="@string/hint_casa_local">
-
-                <AutoCompleteTextView
-                    android:id="@+id/auto_casa_local"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Botão Criar -->
-            <Button
-                android:id="@+id/btn_criar_local"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/btn_criar_local"
-                android:textAllCaps="true"/>
-
-        </LinearLayout>
-    </ScrollView>
-
-</FrameLayout>
+    </LinearLayout>
+</ScrollView>

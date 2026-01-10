@@ -1,40 +1,40 @@
 package pt.ipleiria.estg.dei.amsi.homepantry;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.AutoCompleteTextView;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
-import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Casa;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local;
 
 public class CriarNovoLocalFragment extends Fragment {
 
     // Views
-    private AutoCompleteTextView spinnerCasas;
-
     private EditText txtNomeLocal;
+    private EditText txtDescricaoLocal;
     private Button btnGuardarLocal;
+    private ImageView imgFotoLocal;
 
-    // Dados
-    private List<Casa> listaCasas = new ArrayList<>();
-    private int idCasaSelecionada = -1;
+    // Foto
+    private String fotoPathSelecionada;
+    private static final int REQUEST_GALERIA = 100;
 
     public CriarNovoLocalFragment() {
-        // obrigatório
+        // construtor obrigatório
     }
 
     @Override
@@ -50,29 +50,24 @@ public class CriarNovoLocalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Ligar views
-        spinnerCasas = view.findViewById(R.id.auto_casa_local);
         txtNomeLocal = view.findViewById(R.id.edt_nome_local);
+        txtDescricaoLocal = view.findViewById(R.id.edt_descricao_local);
         btnGuardarLocal = view.findViewById(R.id.btn_criar_local);
+        imgFotoLocal = view.findViewById(R.id.img_foto_local);
 
-        // ⚠️ TEMPORÁRIO — dados fake (até ligares API)
-        carregarCasasFake();
-
-        // ✅ LISTENER CERTO PARA AutoCompleteTextView
-        spinnerCasas.setOnItemClickListener((parent, view1, position, id) -> {
-            Casa casa = (Casa) parent.getItemAtPosition(position);
-            idCasaSelecionada = casa.getId();
-        });
+        Button btnFoto = view.findViewById(R.id.btn_carregar_foto_novo_local);
+        btnFoto.setOnClickListener(v -> abrirGaleria());
 
         btnGuardarLocal.setOnClickListener(v -> guardarLocal());
     }
 
-
     // ======================================================
-    // MÉTODO CRÍTICO — GUARDAR LOCAL (API no futuro)
+    // GUARDAR LOCAL (SEM API AINDA)
     // ======================================================
     private void guardarLocal() {
 
         String nomeLocal = txtNomeLocal.getText().toString().trim();
+        String descricaoLocal = txtDescricaoLocal.getText().toString().trim();
 
         if (nomeLocal.isEmpty()) {
             txtNomeLocal.setError("Obrigatório");
@@ -80,49 +75,73 @@ public class CriarNovoLocalFragment extends Fragment {
             return;
         }
 
-        if (idCasaSelecionada == -1) {
-            Toast.makeText(requireContext(),
-                    "Escolhe uma casa",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 🔥 POR AGORA: apenas simulação
-        String msg = "Local: " + nomeLocal +
-                "\nCasa ID: " + idCasaSelecionada;
+        // Criar objeto Local (MODEL)
+        Local local = new Local(nomeLocal, descricaoLocal);
+        local.setFotoPath(fotoPathSelecionada);
 
         Toast.makeText(requireContext(),
-                "Guardado (simulação):\n" + msg,
-                Toast.LENGTH_LONG).show();
+                "Local criado (simulação)",
+                Toast.LENGTH_SHORT).show();
 
-        limparFormulario();
+        // Voltar atrás
+        requireActivity().onBackPressed();
     }
 
     // ======================================================
-    // AUXILIARES
+    // FOTO DO LOCAL
     // ======================================================
-    private void limparFormulario() {
-        txtNomeLocal.setText("");
-        spinnerCasas.setSelection(0);
+    private void abrirGaleria() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_GALERIA);
     }
 
-    // ⚠️ TEMPORÁRIO — até ligares API de Casas
-    private void carregarCasasFake() {
-        listaCasas.clear();
-        listaCasas.add(new Casa(1, "Casa Principal"));
-        listaCasas.add(new Casa(2, "Casa da Praia"));
-        listaCasas.add(new Casa(3, "Casa dos Pais"));
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        ArrayAdapter<Casa> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                listaCasas
-        );
-        adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
-        );
-        spinnerCasas.setAdapter(adapter);
+        if (requestCode == REQUEST_GALERIA
+                && resultCode == getActivity().RESULT_OK
+                && data != null) {
 
-        idCasaSelecionada = listaCasas.get(0).getId();
+            Uri imageUri = data.getData();
+            guardarImagemLocal(imageUri);
+        }
+    }
+
+    private void guardarImagemLocal(Uri imageUri) {
+        try {
+            InputStream inputStream = requireContext()
+                    .getContentResolver()
+                    .openInputStream(imageUri);
+
+            File file = new File(
+                    requireContext().getFilesDir(),
+                    "local_" + System.currentTimeMillis() + ".jpg"
+            );
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            fotoPathSelecionada = file.getAbsolutePath();
+
+            // Preview
+            imgFotoLocal.setImageURI(Uri.fromFile(file));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(),
+                    "Erro ao guardar imagem",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HomePantry</string>
 
@@ -47,7 +48,7 @@
     <!-- criar_novo_local -->
     <string name="titulo_criar_local">Criar Novo Local</string>
     <string name="hint_nome_local">Nome</string>
-    <string name="hint_casa_local">Casa</string>
+    <string name="hint_descricao_local">Descrição</string>
     <string name="btn_carregar_foto_novo_local">Carregar foto</string>
     <string name="btn_criar_local">Criar</string>
 
@@ -56,7 +57,7 @@
     <string name="titulo_gerir_produto">Gerir Produto</string>
     <string name="info_stock_preco">Stock atual:\nPreço:\nPreço total:</string>
     <string name="label_validade">Validade</string>
-    <string name="btn_calendario">📅</string> <!-- ou "Data" se preferires texto -->
+    <string name="btn_calendario">Data</string> <!-- ou "Data" se preferires texto -->
     <string name="btn_atualizar">Atualizar</string>
     <string name="btn_criar">Criar</string>
     <string name="btn_alterar_foto">Alterar foto</string>
