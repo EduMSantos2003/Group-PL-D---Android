@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import android.widget.ScrollView;
+
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -29,6 +32,8 @@ public class CriarNovoProdutoFragment extends Fragment {
     private Spinner spinnerCategorias;
     private EditText txtNome, txtDescricao, txtUnidade, txtPreco, txtValidade;
     private Button btnEscolherImagem, btnGuardarProduto;
+    private ScrollView scrollView;
+
 
     // Dados
     private List<Categoria> listaCategorias = new ArrayList<>();
@@ -49,6 +54,8 @@ public class CriarNovoProdutoFragment extends Fragment {
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // ScrollView
+        scrollView = view.findViewById(R.id.scroll_criar_produto);
 
         // Ligar views
         spinnerCategorias = view.findViewById(R.id.dropdown_escolher_categoria);
@@ -61,6 +68,9 @@ public class CriarNovoProdutoFragment extends Fragment {
         btnGuardarProduto = view.findViewById(R.id.btn_guardar_produto);
 
         carregarCategoriasFake(); // ⚠️ temporário até ligares API categorias
+
+        // Só agora
+        configurarAutoScroll();
 
         spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -107,7 +117,8 @@ public class CriarNovoProdutoFragment extends Fragment {
 
         if (precoStr.isEmpty()) {
             txtPreco.setError("Obrigatório");
-            txtPreco.requestFocus();
+            focarEsubir(txtNome);
+//            txtPreco.requestFocus();
             return;
         }
 
@@ -168,6 +179,12 @@ public class CriarNovoProdutoFragment extends Fragment {
             }
         });
     }
+    private void focarEsubir(View campo) {
+        campo.requestFocus();
+        if (scrollView != null) {
+            scrollView.post(() -> scrollView.smoothScrollTo(0, campo.getBottom()));
+        }
+    }
 
     // ==========================================================
     // Auxiliares
@@ -197,5 +214,19 @@ public class CriarNovoProdutoFragment extends Fragment {
         spinnerCategorias.setAdapter(adapter);
 
         idCategoriaSelecionada = listaCategorias.get(0).getId();
+    }
+
+    private void configurarAutoScroll() {
+        View.OnFocusChangeListener listener = (v, hasFocus) -> {
+            if (hasFocus && scrollView != null) {
+                scrollView.post(() -> scrollView.smoothScrollTo(0, v.getBottom()));
+            }
+        };
+
+        txtNome.setOnFocusChangeListener(listener);
+        txtDescricao.setOnFocusChangeListener(listener);
+        txtUnidade.setOnFocusChangeListener(listener);
+        txtPreco.setOnFocusChangeListener(listener);
+        txtValidade.setOnFocusChangeListener(listener);
     }
 }

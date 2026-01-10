@@ -9,6 +9,12 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+
+import androidx.activity.EdgeToEdge;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -19,6 +25,9 @@ public class MenuMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(
+                android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        );
         setContentView(R.layout.activity_menu_main);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
@@ -63,6 +72,7 @@ public class MenuMainActivity extends AppCompatActivity {
                 && navController.getCurrentDestination().getId() != destino) {
             navController.navigate(destino);
         }
+
     }
 
     @Override
@@ -74,7 +84,5 @@ public class MenuMainActivity extends AppCompatActivity {
 
         NavController navController = navHostFragment.getNavController();
         return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
-
-
     }
 }

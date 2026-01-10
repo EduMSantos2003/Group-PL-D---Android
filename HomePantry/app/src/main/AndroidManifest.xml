@@ -29,11 +29,13 @@
         <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".MenuMainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

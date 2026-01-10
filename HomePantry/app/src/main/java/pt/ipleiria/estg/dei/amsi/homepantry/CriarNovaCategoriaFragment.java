@@ -7,6 +7,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import pt.ipleiria.estg.dei.amsi.homepantry.data.CategoriaDao;
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +30,10 @@ public class CriarNovaCategoriaFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EditText editNome;
+    private Button btnCriar;
+
 
     public CriarNovaCategoriaFragment() {
         // Required empty public constructor
@@ -58,7 +69,94 @@ public class CriarNovaCategoriaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_criar_nova_categoria, container, false);
+        // 1️⃣ Inflar o layout
+        View v = inflater.inflate(R.layout.fragment_criar_nova_categoria, container, false);
+
+        // 2️⃣ Ligar os elementos do layout às variáveis Java
+        View editNome = v.findViewById(R.id.EditText_nome);
+        btnCriar = v.findViewById(R.id.btn_criar_categoria);
+
+        // 3️⃣ Definir o comportamento do botão
+        btnCriar.setOnClickListener(view -> criarCategoriaNaApi());
+
+        return v;
+//        return inflater.inflate(R.layout.fragment_criar_nova_categoria, container, false);
     }
+
+
+    /**
+     * Método chamado quando o utilizador clica no botão "Criar Categoria".
+     * Valida o input e chama a API.
+     */
+    private void criarCategoriaNaApi() {
+
+        // 4️⃣ Ler o texto introduzido pelo utilizador
+        String nome = editNome.getText().toString().trim();
+
+        // 5️⃣ Validação simples do formulário
+        if (nome.isEmpty()) {
+            editNome.setError("Obrigatório");
+            editNome.requestFocus();
+            return;
+        }
+
+        // 6️⃣ Evitar múltiplos cliques enquanto a API responde
+        btnCriar.setEnabled(false);
+
+        // 7️⃣ Criar o objeto Categoria a enviar para a API
+        Categoria categoria = new Categoria();
+        categoria.setNome(nome);
+
+        // 8️⃣ Criar instância do DAO da API
+        CategoriaDao categoriaDao = new CategoriaDao();
+
+        // 9️⃣ Chamar a API (assíncrono)
+        categoriaDao.criarCategoria(categoria, new CategoriaListener() {
+
+            /**
+             * Chamado quando a API cria a categoria com sucesso
+             */
+            @Override
+            public void onCategoriaCreated(Categoria categoria) {
+
+                // ⚠️ O callback vem de uma Thread → voltar à UI thread
+                if (!isAdded()) return;
+
+                requireActivity().runOnUiThread(() -> {
+
+                    // 10️⃣ Reativar botão
+                    btnCriar.setEnabled(true);
+
+                    // 11️⃣ Feedback ao utilizador
+                    Toast.makeText(requireContext(),
+                            "Categoria criada com sucesso na API!",
+                            Toast.LENGTH_SHORT).show();
+
+                    // 12️⃣ Limpar o campo de texto
+                    editNome.setText("");
+                });
+            }
+
+            /**
+             * Chamado quando ocorre um erro na criação da categoria
+             */
+            @Override
+            public void onCategoriaError(String erro) {
+
+                if (!isAdded()) return;
+
+                requireActivity().runOnUiThread(() -> {
+
+                    // 13️⃣ Reativar botão
+                    btnCriar.setEnabled(true);
+
+                    // 14️⃣ Mostrar mensagem de erro devolvida
+                    Toast.makeText(requireContext(),
+                            "Erro ao criar categoria: " + erro,
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
 }
