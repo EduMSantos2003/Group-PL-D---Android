@@ -62,13 +62,18 @@ public class ListaLocaisFragment extends Fragment
         );
 
         listaLocais = new ArrayList<>();
-        adapter = new LocalAdapter(listaLocais);
+
+        // ✅ ADAPTER COM LISTENER
+        adapter = new LocalAdapter(listaLocais, this);
         rvLocais.setAdapter(adapter);
 
-        int casaId = 2; // TEMPORÁRIO
+        int casaId = 1; // TEMPORÁRIO
         LocalDao.getLocais(casaId, this);
     }
 
+    // ======================================================
+    // CALLBACK API
+    // ======================================================
     @Override
     public void onGetLocais(ArrayList<Local> locais) {
         requireActivity().runOnUiThread(() -> {
@@ -88,5 +93,25 @@ public class ListaLocaisFragment extends Fragment
                 ).show()
         );
     }
-}
 
+    // ======================================================
+    // CLIQUE NO LOCAL
+    // ======================================================
+    @Override
+    public void onLocalClick(int localId, String nomeLocal) {
+
+        Toast.makeText(requireContext(),
+                "Local: " + nomeLocal,
+                Toast.LENGTH_SHORT).show();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("localId", localId);
+        bundle.putString("nomeLocal", nomeLocal);
+
+        NavHostFragment.findNavController(this)
+                .navigate(
+                        R.id.action_listaLocais_to_dashboardLocal,
+                        bundle
+                );
+    }
+}

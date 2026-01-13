@@ -14,14 +14,18 @@ import java.io.File;
 import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.R;
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.LocalListener;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local;
 
 public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.LocalViewHolder> {
 
     private List<Local> listaLocais;
+    private LocalListener listener;
 
-    public LocalAdapter(List<Local> listaLocais) {
+    // ✅ CONSTRUTOR CORRETO
+    public LocalAdapter(List<Local> listaLocais, LocalListener listener) {
         this.listaLocais = listaLocais;
+        this.listener = listener;
     }
 
     @NonNull
@@ -53,6 +57,16 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.LocalViewHol
         } else {
             holder.imgFoto.setImageResource(android.R.color.darker_gray);
         }
+
+        // ✅ CLIQUE NO LOCAL
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onLocalClick(
+                        local.getId(),
+                        local.getNome()
+                );
+            }
+        });
     }
 
     @Override
@@ -78,30 +92,3 @@ public class LocalAdapter extends RecyclerView.Adapter<LocalAdapter.LocalViewHol
         }
     }
 }
-
-
-//🔹 onCreateViewHolder
-//
-//“Cria uma linha”
-//
-//Usa item_local.xml
-//
-//🔹 onBindViewHolder
-//
-//“Preenche a linha”
-//
-//Mete:
-//
-//nome
-//
-//        descrição
-//
-//imagem (se existir)
-//
-//🔹 LocalViewHolder
-//
-//Guarda referências às views
-//
-//Evita findViewById repetido
-//
-//Isto é RecyclerView

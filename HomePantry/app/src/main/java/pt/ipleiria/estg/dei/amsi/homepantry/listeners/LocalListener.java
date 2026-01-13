@@ -10,6 +10,13 @@ public interface LocalListener {
 
     void onError(String erro);
 
+    void onLocalClick(int localId, String nomeLocal);
+
 }
+
+
+
+
+
 
 

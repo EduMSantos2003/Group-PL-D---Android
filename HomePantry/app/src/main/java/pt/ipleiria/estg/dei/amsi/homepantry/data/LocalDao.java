@@ -16,7 +16,7 @@ public class LocalDao {
 
     // ⚠️ BASE URL (sem casa fixa)
     private static final String BASE_URL =
-            "http://192.168.1.11/Group-PL-D---Web/homepantry/backend/web/index.php/api";
+            "http://192.168.1.4:8000/api";
 
     // ======================================================
     // GET LOCAIS (MASTER–DETAIL)

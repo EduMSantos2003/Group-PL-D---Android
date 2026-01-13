@@ -5,6 +5,17 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.ProdutoListListener;
+
 
 import pt.ipleiria.estg.dei.amsi.homepantry.listeners.ProdutoListener;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
@@ -55,4 +66,65 @@ public class ProdutoDao {
             }
         }).start();
     }
+
+    public static void getProdutosPorLocal(
+            int localId,
+            ProdutoListListener listener
+    ) {
+        new Thread(() -> {
+            ArrayList<Produto> produtos = new ArrayList<>();
+
+            try {
+                URL url = new URL(
+                        "http://192.168.1.4/Group-PL-D---Web/homepantry/backend/web/index.php/api/local/"
+                                + localId + "/produtos"
+                );
+
+                HttpURLConnection conn =
+                        (HttpURLConnection) url.openConnection();
+
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(conn.getInputStream())
+                    );
+
+                    StringBuilder json = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        json.append(line);
+                    }
+
+                    reader.close();
+
+                    JSONArray array = new JSONArray(json.toString());
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+
+                        Produto p = new Produto();
+                        p.setId(obj.getInt("id"));
+                        p.setNome(obj.getString("nome"));
+                        p.setDescricao(obj.getString("descricao"));
+
+                        produtos.add(p);
+                    }
+
+                    listener.onGetProdutos(produtos);
+
+                } else {
+                    listener.onError("Erro HTTP " + conn.getResponseCode());
+                }
+
+            } catch (Exception e) {
+                listener.onError(e.getMessage());
+            }
+        }).start();
+    }
+
 }

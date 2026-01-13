@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.amsi.homepantry.data;
 
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,7 +19,7 @@ public class CategoriaDao {
 
     // Endpoint da API para criação de categorias
     private static final String BASE_URL =
-            "http://10.0.2.2/Group-PL-D---Web/homepantry/backend/web/index.php/api/categoria";
+            "http://192.168.1.4:8000/api";
 
     /**
      * Cria uma categoria na API.
