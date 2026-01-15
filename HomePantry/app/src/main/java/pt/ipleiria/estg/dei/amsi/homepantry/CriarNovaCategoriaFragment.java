@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import pt.ipleiria.estg.dei.amsi.homepantry.data.CategoriaDao;
 import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
@@ -73,7 +75,7 @@ public class CriarNovaCategoriaFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_criar_nova_categoria, container, false);
 
         // 2️⃣ Ligar os elementos do layout às variáveis Java
-        View editNome = v.findViewById(R.id.EditText_nome);
+        editNome = v.findViewById(R.id.EditText_nome);
         btnCriar = v.findViewById(R.id.btn_criar_categoria);
 
         // 3️⃣ Definir o comportamento do botão
@@ -82,7 +84,6 @@ public class CriarNovaCategoriaFragment extends Fragment {
         return v;
 //        return inflater.inflate(R.layout.fragment_criar_nova_categoria, container, false);
     }
-
 
     /**
      * Método chamado quando o utilizador clica no botão "Criar Categoria".
@@ -112,7 +113,6 @@ public class CriarNovaCategoriaFragment extends Fragment {
 
         // 9️⃣ Chamar a API (assíncrono)
         categoriaDao.criarCategoria(categoria, new CategoriaListener() {
-
             /**
              * Chamado quando a API cria a categoria com sucesso
              */
@@ -141,7 +141,7 @@ public class CriarNovaCategoriaFragment extends Fragment {
              * Chamado quando ocorre um erro na criação da categoria
              */
             @Override
-            public void onCategoriaError(String erro) {
+            public void onError(String erro) {
 
                 if (!isAdded()) return;
 
@@ -156,7 +156,18 @@ public class CriarNovaCategoriaFragment extends Fragment {
                             Toast.LENGTH_LONG).show();
                 });
             }
+
+            // ✅ tens de implementar, mesmo que não uses aqui
+            @Override
+            public void onGetCategorias(ArrayList<Categoria> categoria) {
+                // não usado neste fragment
+            }
+
+            // ✅ tens de implementar, mesmo que não uses aqui
+            @Override
+            public void onCategoriaClick(int categoriaId, String nomeCategoria) {
+                // não usado neste fragment
+            }
         });
     }
-
 }

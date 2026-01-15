@@ -1,7 +1,5 @@
 package pt.ipleiria.estg.dei.amsi.homepantry.data;
 
-import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
-
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -18,8 +16,10 @@ import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
 public class CategoriaDao {
 
     // Endpoint da API para criação de categorias
+//    private static final String BASE_URL =
+//            "http://192.168.1.4:8000/api";
     private static final String BASE_URL =
-            "http://192.168.1.4:8000/api";
+            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/api";
 
     /**
      * Cria uma categoria na API.
@@ -32,7 +32,7 @@ public class CategoriaDao {
 
             try {
                 // 1️⃣ Abrir ligação HTTP
-                URL url = new URL(BASE_URL);
+                URL url = new URL(BASE_URL + "/categoria");
                 conn = (HttpURLConnection) url.openConnection();
 
                 // 2️⃣ Configuração do request
@@ -79,14 +79,15 @@ public class CategoriaDao {
 
                 } else {
                     // Erro devolvido pela API (ex.: validação, duplicado, etc.)
-                    listener.onCategoriaError(
+                    listener.onError(
                             "Erro HTTP " + responseCode + ": " + responseBody
                     );
                 }
 
             } catch (Exception e) {
                 // Erros de rede, JSON, URL, etc.
-                listener.onCategoriaError(e.getMessage());
+//                listener.onError(e.getMessage());
+                listener.onError(e.getClass().getSimpleName() + ": " + e.getMessage());
 
             } finally {
                 if (conn != null) conn.disconnect();
