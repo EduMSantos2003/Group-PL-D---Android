@@ -18,10 +18,11 @@ public class CategoriaDao {
     // Endpoint da API para criação de categorias
 //    private static final String BASE_URL =
 //            "http://192.168.1.4:8000/api";
+    private static final String BASE_URL =
+            "http://10.0.2.2/Group-PL-D---Web/homepantry/backend/web/index.php/api";
+
 //    private static final String BASE_URL =
 //            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/api";
-    private static final String BASE_URL =
-            "http://192.168.1.9/Group-PL-D---Web/homepantry/backend/web/index.php/api";
 
     /**
      * Cria uma categoria na API.

@@ -12,6 +12,6 @@ public interface ApiService {
     @GET("index.php/api/produto/index")
     Call<List<Produto>> getProdutos();
 
-    @GET("index.php?r=api/categoria/index")
+    @GET("index.php/api/categoria/index")
     Call<List<Categoria>> getCategoria();
 }
