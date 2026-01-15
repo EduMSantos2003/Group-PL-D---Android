@@ -5,8 +5,12 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/ListaStockFragment"
+            android:title="Stock" />
+
+        <item
             android:id="@+id/ListaProdutosFragment"
-            android:title="Produtos / Stock" />
+            android:title="Produtos" />
 
         <item
             android:id="@+id/ListaComprasFragment"
