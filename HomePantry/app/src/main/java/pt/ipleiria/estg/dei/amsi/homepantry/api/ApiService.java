@@ -8,6 +8,6 @@ import retrofit2.http.GET;
 
 public interface ApiService {
 
-    @GET("index.php?r=api/produto/index")
+    @GET("index.php/api/produto/index")
     Call<List<Produto>> getProdutos();
 }
