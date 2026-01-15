@@ -1,16 +1,25 @@
 package pt.ipleiria.estg.dei.amsi.homepantry;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import java.util.ArrayList;
+
+import pt.ipleiria.estg.dei.amsi.homepantry.adapters.CategoriaAdapter;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.CategoriaDao;
+import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +36,10 @@ public class ListaCategoriasFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView rvCategorias;
+    private CategoriaAdapter adapter;
+    private final ArrayList<Categoria> lista = new ArrayList<>();
 
     public ListaCategoriasFragment() {
         // Required empty public constructor
@@ -70,12 +83,51 @@ public class ListaCategoriasFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Botão para navegar para Criar Categoria
         ImageButton btnAdicionarCategoria = view.findViewById(R.id.btn_adicionar_categoria);
-
         btnAdicionarCategoria.setOnClickListener(v ->
                 NavHostFragment.findNavController(ListaCategoriasFragment.this)
                         .navigate(R.id.action_listaCategorias_to_criarNovaCategoria)
         );
+
+        // ✅ RecyclerView
+        rvCategorias = view.findViewById(R.id.rv_listas_categorias);
+        rvCategorias.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        adapter = new CategoriaAdapter(lista);
+        rvCategorias.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        carregarCategorias();
+    }
+
+    private void carregarCategorias() {
+        CategoriaDao dao = new CategoriaDao();
+        dao.getCategorias(new CategoriaListener() {
+
+            @Override
+            public void onGetCategorias(ArrayList<Categoria> categorias) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> adapter.setCategorias(categorias));
+            }
+
+            @Override
+            public void onError(String erro) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                "Erro ao carregar categorias: " + erro,
+                                Toast.LENGTH_LONG).show()
+                );
+            }
+
+            // Não usados aqui
+            @Override public void onCategoriaCreated(Categoria categoria) { }
+            @Override public void onCategoriaClick(int categoriaId, String nomeCategoria) { }
+        });
     }
 
 }

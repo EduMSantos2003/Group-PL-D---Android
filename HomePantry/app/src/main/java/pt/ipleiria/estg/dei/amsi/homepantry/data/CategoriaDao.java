@@ -18,8 +18,10 @@ public class CategoriaDao {
     // Endpoint da API para criação de categorias
 //    private static final String BASE_URL =
 //            "http://192.168.1.4:8000/api";
+//    private static final String BASE_URL =
+//            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/api";
     private static final String BASE_URL =
-            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/api";
+            "http://192.168.1.9/Group-PL-D---Web/homepantry/backend/web/index.php/api";
 
     /**
      * Cria uma categoria na API.
@@ -94,6 +96,66 @@ public class CategoriaDao {
             }
         }).start();
     }
+
+    public void getCategorias(CategoriaListener listener) {
+
+        new Thread(() -> {
+            HttpURLConnection conn = null;
+
+            try {
+                // ✅ Endpoint correto
+                URL url = new URL(BASE_URL + "/categoria");
+                conn = (HttpURLConnection) url.openConnection();
+
+                // ✅ Timeouts
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+
+                // ✅ Método
+                conn.setRequestMethod("GET");
+
+                // ✅ Pedir JSON (para não vir XML)
+                conn.setRequestProperty("Accept", "application/json");
+
+                int responseCode = conn.getResponseCode();
+
+                InputStream is = (responseCode >= 200 && responseCode < 300)
+                        ? conn.getInputStream()
+                        : conn.getErrorStream();
+
+                String responseBody = readStream(is);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Espera-se: [{"id":1,"nome":"..."}, ...]
+                    org.json.JSONArray arr = new org.json.JSONArray(responseBody);
+
+                    java.util.ArrayList<Categoria> lista = new java.util.ArrayList<>();
+
+                    for (int i = 0; i < arr.length(); i++) {
+                        org.json.JSONObject obj = arr.getJSONObject(i);
+
+                        Categoria c = new Categoria();
+                        if (obj.has("id")) c.setId(obj.getInt("id"));
+                        if (obj.has("nome")) c.setNome(obj.getString("nome"));
+
+                        lista.add(c);
+                    }
+
+                    listener.onGetCategorias(lista);
+
+                } else {
+                    listener.onError("Erro HTTP " + responseCode + ": " + responseBody);
+                }
+
+            } catch (Exception e) {
+                listener.onError(e.getClass().getSimpleName() + ": " + e.getMessage());
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+
+        }).start();
+    }
+
 
     /**
      * Lê o conteúdo de um InputStream e devolve uma String.
