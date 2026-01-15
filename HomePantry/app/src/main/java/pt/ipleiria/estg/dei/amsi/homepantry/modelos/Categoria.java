@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "categoria")
 public class Categoria {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
 
-    private String nome;
+    private String nome ;
 
     // Construtor vazio obrigatório para o Room
     public Categoria() {

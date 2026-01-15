@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static final String BASE_URL =
-            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/";
+            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/";
 //    private static final String BASE_URL =
 //            "http://192.168.1.9/Group-PL-D---Web/homepantry/backend/web/";
 

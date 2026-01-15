@@ -15,67 +15,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.adapters.CategoriaAdapter;
-import pt.ipleiria.estg.dei.amsi.homepantry.data.CategoriaDao;
-import pt.ipleiria.estg.dei.amsi.homepantry.listeners.CategoriaListener;
+import pt.ipleiria.estg.dei.amsi.homepantry.api.RetrofitClient;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListaCategoriasFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ListaCategoriasFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private RecyclerView rvCategorias;
     private CategoriaAdapter adapter;
     private final ArrayList<Categoria> lista = new ArrayList<>();
 
-    public ListaCategoriasFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListasCategoriasFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListaCategoriasFragment newInstance(String param1, String param2) {
-        ListaCategoriasFragment fragment = new ListaCategoriasFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public ListaCategoriasFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_lista_categorias, container, false);
     }
 
@@ -90,7 +49,7 @@ public class ListaCategoriasFragment extends Fragment {
                         .navigate(R.id.action_listaCategorias_to_criarNovaCategoria)
         );
 
-        // ✅ RecyclerView
+        // RecyclerView
         rvCategorias = view.findViewById(R.id.rv_listas_categorias);
         rvCategorias.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -105,29 +64,35 @@ public class ListaCategoriasFragment extends Fragment {
     }
 
     private void carregarCategorias() {
-        CategoriaDao dao = new CategoriaDao();
-        dao.getCategorias(new CategoriaListener() {
 
-            @Override
-            public void onGetCategorias(ArrayList<Categoria> categorias) {
-                if (!isAdded()) return;
-                requireActivity().runOnUiThread(() -> adapter.setCategorias(categorias));
-            }
+        RetrofitClient.getApiService().getCategorias()
+                .enqueue(new Callback<List<Categoria>>() {
+                    @Override
+                    public void onResponse(Call<List<Categoria>> call, Response<List<Categoria>> response) {
+                        if (!isAdded()) return;
 
-            @Override
-            public void onError(String erro) {
-                if (!isAdded()) return;
-                requireActivity().runOnUiThread(() ->
+                        if (response.isSuccessful() && response.body() != null) {
+                            ArrayList<Categoria> categorias = new ArrayList<>(response.body());
+                            adapter.setCategorias(categorias);
+                        } if (response.isSuccessful() && response.body() != null) {
+                            ArrayList<Categoria> categorias = new ArrayList<>(response.body());
+                            adapter.setCategorias(categorias);
+                        } else {
+                            Toast.makeText(requireContext(),
+                                    "Erro HTTP: " + response.code(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Categoria>> call, Throwable t) {
+                        if (!isAdded()) return;
+
                         Toast.makeText(requireContext(),
-                                "Erro ao carregar categorias: " + erro,
-                                Toast.LENGTH_LONG).show()
-                );
-            }
-
-            // Não usados aqui
-            @Override public void onCategoriaCreated(Categoria categoria) { }
-            @Override public void onCategoriaClick(int categoriaId, String nomeCategoria) { }
-        });
+                                "Falha API: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
-
 }
