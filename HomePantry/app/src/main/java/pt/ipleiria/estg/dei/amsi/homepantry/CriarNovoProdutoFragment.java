@@ -147,14 +147,17 @@ public class CriarNovoProdutoFragment extends Fragment {
         }
 
         // Criar objeto Produto (PURO – SEM ROOM)
-        Produto produto = new Produto(
-                nome,
-                descricao,
-                unidade,
-                preco,
-                validade,
-                idCategoriaSelecionada
-        );
+        Produto produto = new Produto();
+
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setUnidade(unidade);
+        produto.setPreco(String.valueOf(preco));
+        produto.setValidade(validade);
+
+        int categoriaId = 1; // TEMPORÁRIO
+        produto.setCategoria_id(categoriaId);
+
 
         ProdutoDao produtoDao = new ProdutoDao();
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,12 +19,12 @@ import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
 public class ProdutoAdapter
         extends RecyclerView.Adapter<ProdutoAdapter.ViewHolder> {
 
-    private final ArrayList<Produto> produtos;
 
-    public ProdutoAdapter(ArrayList<Produto> produtos) {
+    private List<Produto> produtos;
+
+    public ProdutoAdapter(List<Produto> produtos) {
         this.produtos = produtos;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(

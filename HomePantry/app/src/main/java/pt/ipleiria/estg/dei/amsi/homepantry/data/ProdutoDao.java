@@ -42,7 +42,7 @@ public class ProdutoDao {
                 json.put("preco", produto.getPreco());
                 json.put("unidade", produto.getUnidade());
                 json.put("validade", produto.getValidade());
-                json.put("categoria_id", produto.getCategoriaId());
+                json.put("categoria_id", produto.getCategoria_id());
 
                 OutputStream os = conn.getOutputStream();
                 os.write(json.toString().getBytes());

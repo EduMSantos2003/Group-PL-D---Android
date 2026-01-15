@@ -2,35 +2,20 @@ package pt.ipleiria.estg.dei.amsi.homepantry.modelos;
 
 public class Produto {
 
-    private int id;              // vem da API (GET)
-    private int categoriaId;     // categoria_id no JSON
+    private int id;
+    private int categoria_id;
     private String nome;
     private String descricao;
     private int unidade;
-    private double preco;
-    private String validade;     // yyyy-MM-dd
-    private String imagem;       // opcional (URL ou nome do ficheiro)
+    private String preco;
+    private String validade;
+    private String imagem;
 
-    // 🔹 CONSTRUTOR PARA POST (SEM ID)
-    public Produto(String nome,
-                   String descricao,
-                   int unidade,
-                   double preco,
-                   String validade,
-                   int categoriaId) {
-
-        this.nome = nome;
-        this.descricao = descricao;
-        this.unidade = unidade;
-        this.preco = preco;
-        this.validade = validade;
-        this.categoriaId = categoriaId;
+    // 🔹 CONSTRUTOR VAZIO (obrigatório para Retrofit)
+    public Produto() {
     }
 
-    // 🔹 CONSTRUTOR VAZIO (OBRIGATÓRIO para JSON parsing)
-    public Produto() {}
-
-    // 🔹 GETTERS & SETTERS
+    // 🔹 GETTERS E SETTERS
 
     public int getId() {
         return id;
@@ -40,12 +25,12 @@ public class Produto {
         this.id = id;
     }
 
-    public int getCategoriaId() {
-        return categoriaId;
+    public int getCategoria_id() {
+        return categoria_id;
     }
 
-    public void setCategoriaId(int categoriaId) {
-        this.categoriaId = categoriaId;
+    public void setCategoria_id(int categoria_id) {
+        this.categoria_id = categoria_id;
     }
 
     public String getNome() {
@@ -72,11 +57,11 @@ public class Produto {
         this.unidade = unidade;
     }
 
-    public double getPreco() {
+    public String getPreco() {
         return preco;
     }
 
-    public void setPreco(double preco) {
+    public void setPreco(String preco) {
         this.preco = preco;
     }
 
