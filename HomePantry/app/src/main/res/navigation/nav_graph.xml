@@ -41,7 +41,13 @@
         android:id="@+id/ListaListasFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaListasFragment"
         android:label="Listas"
-        tools:layout="@layout/fragment_lista_listas" />
+        tools:layout="@layout/fragment_lista_listas">
+
+        <action
+            android:id="@+id/action_ListaListasFragment_to_ListaComprasFragment"
+            app:destination="@id/ListasComprasFragment" />
+    </fragment>
+
 
 
 
@@ -68,9 +74,13 @@
 
     <!-- LISTA COMPRAS -->
     <fragment
-        android:id="@+id/ListaComprasFragment"
+        android:id="@+id/ListasComprasFragment"
         android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaComprasFragment"
         android:label="Listas de compras" />
+
+    <action
+        android:id="@+id/action_ListaListasFragment_to_ListaComprasFragment"
+        app:destination="@id/ListasComprasFragment" />
 
     <!-- LISTA CATEGORIAS -->
     <fragment

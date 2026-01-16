@@ -25,6 +25,7 @@ import retrofit2.Response;
 
 public class ListaProdutosFragment extends Fragment {
 
+
     private RecyclerView recyclerView;
 
     public ListaProdutosFragment() { }

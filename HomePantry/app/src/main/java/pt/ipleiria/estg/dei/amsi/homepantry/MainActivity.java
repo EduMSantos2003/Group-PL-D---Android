@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Button  redirecionar para o fragment
         btnStockProduto.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaProdutosFragment));
-        btnListaCompras.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaComprasFragment));
+        btnListaCompras.setOnClickListener(v -> abrirMenuComDestino(R.id.ListasComprasFragment));
         btnCategorias.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaCategoriasFragment));
         btnLocais.setOnClickListener(v -> abrirMenuComDestino(R.id.ListaLocaisFragment));
     }

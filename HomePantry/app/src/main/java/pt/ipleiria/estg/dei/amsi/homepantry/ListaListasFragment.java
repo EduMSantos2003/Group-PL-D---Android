@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,16 +63,16 @@ public class ListaListasFragment extends Fragment {
 
                         if (response.isSuccessful() && response.body() != null) {
 
-                            // MOSTRAR LISTAS + CLIQUE
                             rvListas.setAdapter(new ListaAdapter(response.body(), lista -> {
+
                                 Bundle bundle = new Bundle();
                                 bundle.putInt("listaId", lista.getId());
+                                bundle.putString("nomeLista", lista.getNome());
 
+                                // navegar usando ACTION (back stack correto)
                                 NavHostFragment.findNavController(ListaListasFragment.this)
-                                        .navigate(R.id.ListaComprasFragment, bundle);
+                                        .navigate(R.id.action_ListaListasFragment_to_ListaComprasFragment, bundle);
 
-
-                                // depois aqui fazemos navigate para detalhe
                             }));
 
                         } else {

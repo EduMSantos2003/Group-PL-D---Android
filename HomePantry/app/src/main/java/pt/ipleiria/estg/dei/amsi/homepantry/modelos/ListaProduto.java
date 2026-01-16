@@ -5,6 +5,12 @@ public class ListaProduto {
     private int id;
     private int lista_id;
     private int produto_id;
+    private String produto_nome;
+
+    public String getProduto_nome() {
+        return produto_nome;
+    }
+
     private double quantidade;
     private double precoUnitario;
     private double subTotal;

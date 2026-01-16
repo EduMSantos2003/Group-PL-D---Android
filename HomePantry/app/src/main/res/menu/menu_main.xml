@@ -16,9 +16,6 @@
             android:id="@+id/ListaListasFragment"
             android:title="Listas" />
 
-        <item
-            android:id="@+id/ListaComprasFragment"
-            android:title="Listas de compras" />
 
         <item
             android:id="@+id/ListaCategoriasFragment"

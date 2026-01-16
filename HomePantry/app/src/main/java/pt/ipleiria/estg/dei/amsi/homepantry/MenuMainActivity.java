@@ -59,7 +59,6 @@ public class MenuMainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.ListaStockFragment,
                 R.id.ListaProdutosFragment,
-                R.id.ListaComprasFragment,
                 R.id.ListaCategoriasFragment,
                 R.id.ListaLocaisFragment,
                 R.id.ListaListasFragment
@@ -68,7 +67,7 @@ public class MenuMainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        // ✅ Abrir logo o fragment pedido pela MainActivity
+        // Abrir logo o fragment pedido pela MainActivity
         int destino = getIntent().getIntExtra(MainActivity.EXTRA_DESTINO, -1);
         if (destino != -1 && navController.getCurrentDestination() != null
                 && navController.getCurrentDestination().getId() != destino) {
