@@ -37,6 +37,14 @@
             app:destination="@id/CriarNovoLocalFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/ListaListasFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaListasFragment"
+        android:label="Listas"
+        tools:layout="@layout/fragment_lista_listas" />
+
+
+
     <!-- LISTA DE PRODUTOS -->
     <fragment
         android:id="@+id/ListaProdutosFragment"

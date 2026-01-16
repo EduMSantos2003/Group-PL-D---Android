@@ -13,6 +13,10 @@
             android:title="Produtos" />
 
         <item
+            android:id="@+id/ListaListasFragment"
+            android:title="Listas" />
+
+        <item
             android:id="@+id/ListaComprasFragment"
             android:title="Listas de compras" />
 

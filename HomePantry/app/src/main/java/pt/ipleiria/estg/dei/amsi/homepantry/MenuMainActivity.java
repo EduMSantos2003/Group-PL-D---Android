@@ -61,7 +61,8 @@ public class MenuMainActivity extends AppCompatActivity {
                 R.id.ListaProdutosFragment,
                 R.id.ListaComprasFragment,
                 R.id.ListaCategoriasFragment,
-                R.id.ListaLocaisFragment
+                R.id.ListaLocaisFragment,
+                R.id.ListaListasFragment
         ).setOpenableLayout(drawerLayout).build();
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
