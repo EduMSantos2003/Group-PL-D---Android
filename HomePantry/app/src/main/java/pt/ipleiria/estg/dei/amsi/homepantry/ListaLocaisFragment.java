@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.amsi.homepantry;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.adapters.LocalAdapter;
+import pt.ipleiria.estg.dei.amsi.homepantry.adapters.ProdutoAdapter;
+import pt.ipleiria.estg.dei.amsi.homepantry.api.RetrofitClient;
 import pt.ipleiria.estg.dei.amsi.homepantry.data.LocalDao;
 import pt.ipleiria.estg.dei.amsi.homepantry.listeners.LocalListener;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListaLocaisFragment extends Fragment
         implements LocalListener {
@@ -56,62 +65,109 @@ public class ListaLocaisFragment extends Fragment
                         .navigate(R.id.action_listaLocais_to_criarNovoLocal)
         );
 
-        rvLocais = view.findViewById(R.id.rv_listas_locais);
-        rvLocais.setLayoutManager(
-                new LinearLayoutManager(requireContext())
+        // RecyclerView (ID CERTO do XML)
+        View recyclerView = view.findViewById(R.id.rv_listas_locais);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext())
         );
 
-        listaLocais = new ArrayList<>();
-
-        // ✅ ADAPTER COM LISTENER
-        adapter = new LocalAdapter(listaLocais, this);
-        rvLocais.setAdapter(adapter);
-
-        int casaId = 1; // TEMPORÁRIO
-        LocalDao.getLocais(casaId, this);
+        // CHAMAR A API
+        carregarLocais();
     }
 
-    // ======================================================
-    // CALLBACK API
-    // ======================================================
-    @Override
-    public void onGetLocais(ArrayList<Local> locais) {
-        requireActivity().runOnUiThread(() -> {
-            listaLocais.clear();
-            listaLocais.addAll(locais);
-            adapter.notifyDataSetChanged();
-        });
-    }
+    private void carregarLocais() {
 
-    @Override
-    public void onError(String erro) {
-        requireActivity().runOnUiThread(() ->
-                Toast.makeText(
-                        requireContext(),
-                        erro,
-                        Toast.LENGTH_SHORT
-                ).show()
-        );
-    }
+        RetrofitClient.getApiService()
+                .getProdutos()
+                .enqueue(new Callback<List<Produto>>() {
 
-    // ======================================================
-    // CLIQUE NO LOCAL
-    // ======================================================
-    @Override
-    public void onLocalClick(int localId, String nomeLocal) {
+                    @Override
+                    public void onResponse(
+                            Call<List<Produto>> call,
+                            Response<List<Produto>> response) {
 
-        Toast.makeText(requireContext(),
-                "Local: " + nomeLocal,
-                Toast.LENGTH_SHORT).show();
+                        if (response.isSuccessful() && response.body() != null) {
+                            recyclerView.setAdapter(
+                                    new ProdutoAdapter(response.body())
+                            );
+                        } else {
+                            Toast.makeText(
+                                    getContext(),
+                                    "Erro ao carregar Local",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("localId", localId);
-        bundle.putString("nomeLocal", nomeLocal);
+                    @Override
+                    public void onFailure(Call<List<Produto>> call, Throwable t) {
+                        Toast.makeText(
+                                getContext(),
+                                "Erro: " + t.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
 
-        NavHostFragment.findNavController(this)
-                .navigate(
-                        R.id.action_listaLocais_to_dashboardLocal,
-                        bundle
-                );
+                        t.printStackTrace();
+                    }
+                });
     }
 }
+//        rvLocais = view.findViewById(R.id.rv_listas_locais);
+//        rvLocais.setLayoutManager(
+//                new LinearLayoutManager(requireContext())
+//        );
+//
+//        listaLocais = new ArrayList<>();
+//
+//        // ✅ ADAPTER COM LISTENER
+//        adapter = new LocalAdapter(listaLocais, this);
+//        rvLocais.setAdapter(adapter);
+//
+//        int casaId = 1; // TEMPORÁRIO
+//        LocalDao.getLocais(casaId, this);
+//    }
+//
+//    // ======================================================
+//    // CALLBACK API
+//    // ======================================================
+//    @Override
+//    public void onGetLocais(ArrayList<Local> locais) {
+//        requireActivity().runOnUiThread(() -> {
+//            listaLocais.clear();
+//            listaLocais.addAll(locais);
+//            adapter.notifyDataSetChanged();
+//        });
+//    }
+//
+//    @Override
+//    public void onError(String erro) {
+//        requireActivity().runOnUiThread(() ->
+//                Toast.makeText(
+//                        requireContext(),
+//                        erro,
+//                        Toast.LENGTH_SHORT
+//                ).show()
+//        );
+//    }
+//
+//    // ======================================================
+//    // CLIQUE NO LOCAL
+//    // ======================================================
+//    @Override
+//    public void onLocalClick(int localId, String nomeLocal) {
+//
+//        Toast.makeText(requireContext(),
+//                "Local: " + nomeLocal,
+//                Toast.LENGTH_SHORT).show();
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("localId", localId);
+//        bundle.putString("nomeLocal", nomeLocal);
+//
+//        NavHostFragment.findNavController(this)
+//                .navigate(
+//                        R.id.action_listaLocais_to_dashboardLocal,
+//                        bundle
+//                );
+//    }
+//}

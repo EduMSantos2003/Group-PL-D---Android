@@ -14,4 +14,7 @@ public interface ApiService {
 
     @GET("api/categoria")
     Call<List<Categoria>> getCategorias();
+
+    @GET("api/local")
+    Call<List<Categoria>> getLocais();
 }
