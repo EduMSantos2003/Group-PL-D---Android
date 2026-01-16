@@ -13,6 +13,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -44,4 +45,8 @@ public interface ApiService {
 
     @POST("api/lista/{id}/adicionar-produto")
     Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
+
+    @PUT("api/lista/{id}")
+    Call<Lista> updateLista(@Path("id") int id, @Body Lista lista);
+
 }

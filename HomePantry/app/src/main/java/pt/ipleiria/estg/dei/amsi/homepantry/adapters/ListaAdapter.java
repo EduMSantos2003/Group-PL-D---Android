@@ -17,15 +17,25 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ViewHolder> 
 
     private List<Lista> listas;
 
+    // Click normal (abrir lista)
     public interface OnListaClickListener {
         void onListaClick(Lista lista);
     }
 
-    private OnListaClickListener listener;
+    // Long click (editar/apagar)
+    public interface OnListaLongClickListener {
+        void onListaLongClick(Lista lista);
+    }
 
-    public ListaAdapter(List<Lista> listas, OnListaClickListener listener) {
+    private OnListaClickListener clickListener;
+    private OnListaLongClickListener longClickListener;
+
+    public ListaAdapter(List<Lista> listas,
+                        OnListaClickListener clickListener,
+                        OnListaLongClickListener longClickListener) {
         this.listas = listas;
-        this.listener = listener;
+        this.clickListener = clickListener;
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -39,12 +49,23 @@ public class ListaAdapter extends RecyclerView.Adapter<ListaAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Lista lista = listas.get(position);
+
         holder.txtNome.setText(lista.getNome());
 
+        //  click normal
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onListaClick(lista);
+            if (clickListener != null) {
+                clickListener.onListaClick(lista);
             }
+        });
+
+        //  long click
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onListaLongClick(lista);
+                return true;
+            }
+            return false;
         });
     }
 
