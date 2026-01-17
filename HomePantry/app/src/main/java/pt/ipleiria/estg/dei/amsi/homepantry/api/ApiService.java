@@ -54,8 +54,7 @@ public interface ApiService {
     //  PRODUTOS DE UMA LISTA (Detail)
     @GET("api/lista/{id}/produtos")
     Call<List<ListaProduto>> getProdutosLista(@Path("id") int listaId);
-
-
+    
     @POST("api/lista/{id}/adicionar-produto")
     Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
 
@@ -70,8 +69,4 @@ public interface ApiService {
             @Path("id") int stockId,
             @Body StockUpdate body
     );
-
-    @POST("api/login")
-    Call<LoginResponse> login(@Body LoginRequest request);
-
 }
