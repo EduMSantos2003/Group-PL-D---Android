@@ -21,6 +21,13 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/configuracaoServidorFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ConfiguracaoServidorFragment"
+        android:label="Configuração Servidor"
+        tools:layout="@layout/fragment_configuracao_servidor" />
+
+
     <!-- LISTA DE LOCAIS -->
     <fragment
         android:id="@+id/ListaLocaisFragment"

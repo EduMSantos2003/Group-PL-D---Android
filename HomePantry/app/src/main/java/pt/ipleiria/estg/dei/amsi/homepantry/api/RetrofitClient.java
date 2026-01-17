@@ -11,26 +11,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL =
-            "http://172.22.21.242/Group-PL-D---Web/homepantry/backend/web/index.php/";
-
     private static Retrofit retrofit;
+    private static String lastBaseUrl = null;
 
-    // agora precisa Context para buscar token
+    // agora precisa Context para buscar token E base url configurada
     public static ApiService getApiService(Context context) {
 
-        if (retrofit == null) {
+        // buscar URL configurada nas prefs
+        ApiConfig config = new ApiConfig(context);
+        String baseUrl = config.getBaseUrl();
+
+        // garantir que termina com /
+        if (baseUrl != null && !baseUrl.endsWith("/")) {
+            baseUrl = baseUrl + "/";
+        }
+
+        // se mudou URL, recria Retrofit
+        if (retrofit == null || lastBaseUrl == null || !baseUrl.equals(lastBaseUrl)) {
+
+            lastBaseUrl = baseUrl;
 
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
 
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new AuthInterceptor(context)) //  mete Authorization automaticamente
+                    .addInterceptor(new AuthInterceptor(context))
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(baseUrl)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
