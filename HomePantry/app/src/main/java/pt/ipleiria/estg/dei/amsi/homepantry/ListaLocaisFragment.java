@@ -59,7 +59,7 @@ public class ListaLocaisFragment extends Fragment implements LocalListener {
     }
 
     private void carregarLocais() {
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .getLocais()
                 .enqueue(new Callback<List<Local>>() {
 

@@ -108,7 +108,7 @@ public class ListaListasFragment extends Fragment {
     // PUT
     // ============================================================
     private void fazerPUT(int id, Lista editada) {
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .updateLista(id, editada)
                 .enqueue(new Callback<Lista>() {
                     @Override
@@ -132,7 +132,7 @@ public class ListaListasFragment extends Fragment {
     //  POST
     // ============================================================
     private void fazerPOST(Lista nova) {
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .createLista(nova)
                 .enqueue(new Callback<Lista>() {
                     @Override
@@ -156,7 +156,7 @@ public class ListaListasFragment extends Fragment {
     // DELETE
     // ============================================================
     private void fazerDELETE(int id) {
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .deleteLista(id)
                 .enqueue(new Callback<Void>() {
                     @Override
@@ -189,7 +189,7 @@ public class ListaListasFragment extends Fragment {
     private void carregarListas() {
         int casaId = 1;
 
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .getListas(casaId)
                 .enqueue(new Callback<List<Lista>>() {
 

@@ -54,7 +54,7 @@ public class ListasComprasFragment extends Fragment {
     }
 
     private void carregarProdutos() {
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .getProdutosLista(listaId)
                 .enqueue(new Callback<List<ListaProduto>>() {
                     @Override

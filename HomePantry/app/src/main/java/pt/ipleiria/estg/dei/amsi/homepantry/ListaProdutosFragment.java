@@ -73,7 +73,7 @@ public class ListaProdutosFragment extends Fragment {
 
     private void carregarProdutos() {
 
-        RetrofitClient.getApiService()
+        RetrofitClient.getApiService(requireContext())
                 .getProdutos()
                 .enqueue(new Callback<List<Produto>>() {
 

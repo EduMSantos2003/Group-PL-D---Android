@@ -4,6 +4,8 @@ import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Categoria;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.LoginRequest;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.LoginResponse;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Lista;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.ListaProduto;
@@ -18,6 +20,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
+
+    @POST("api/auth/login")
+    Call<LoginResponse> login(@Body LoginRequest body);
+
 
     @GET("api/produto")
     Call<List<Produto>> getProdutos();

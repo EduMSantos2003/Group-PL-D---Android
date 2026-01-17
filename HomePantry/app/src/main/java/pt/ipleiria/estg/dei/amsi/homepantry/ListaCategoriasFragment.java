@@ -65,7 +65,7 @@ public class ListaCategoriasFragment extends Fragment {
 
     private void carregarCategorias() {
 
-        RetrofitClient.getApiService().getCategorias()
+        RetrofitClient.getApiService(requireContext()).getCategorias()
                 .enqueue(new Callback<List<Categoria>>() {
                     @Override
                     public void onResponse(Call<List<Categoria>> call, Response<List<Categoria>> response) {
