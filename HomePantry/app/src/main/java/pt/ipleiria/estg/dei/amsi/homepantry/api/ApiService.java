@@ -78,8 +78,5 @@ public interface ApiService {
     //  DELETE remover um item lista_produto
     @DELETE("api/lista-produto/{id}")
     Call<Void> deleteListaProduto(@Path("id") int id);
-    
-    @POST("api/login")
-    Call<LoginResponse> login(@Body LoginRequest request);
 
 }
