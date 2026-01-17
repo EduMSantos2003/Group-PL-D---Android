@@ -1,6 +1,5 @@
 package pt.ipleiria.estg.dei.amsi.homepantry;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +13,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.adapters.ListaProdutoAdapter;
 import pt.ipleiria.estg.dei.amsi.homepantry.api.RetrofitClient;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.AppDatabase;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.ListaProdutoCacheEntity;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.ListaProduto;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
 import retrofit2.Call;
@@ -36,7 +39,7 @@ public class ListaComprasFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true); // ✅ ativa o menu no fragment
+        setHasOptionsMenu(true); // ativa o menu no fragment
     }
 
     @Override
@@ -61,10 +64,14 @@ public class ListaComprasFragment extends Fragment {
             return;
         }
 
+        // ✅ 1) mostra cache primeiro
+        carregarProdutosDaCache();
+
+        // ✅ 2) depois sincroniza da API
         carregarProdutos();
     }
 
-    // ✅ CRIA O MENU NO TOPO
+    // ✅ MENU TOPO
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_lista_compras, menu);
@@ -92,7 +99,6 @@ public class ListaComprasFragment extends Fragment {
         android.widget.Spinner spProdutos = dialogView.findViewById(R.id.spProdutos);
         EditText edtQuantidade = dialogView.findViewById(R.id.edtQuantidade);
 
-        // 1) buscar produtos ao backend
         RetrofitClient.getApiService(requireContext())
                 .getProdutos()
                 .enqueue(new Callback<List<Produto>>() {
@@ -113,7 +119,6 @@ public class ListaComprasFragment extends Fragment {
 
                             spProdutos.setAdapter(adapter);
 
-                            // 2) só abre o dialog depois do spinner estar cheio
                             new AlertDialog.Builder(getContext())
                                     .setTitle("Adicionar Produto")
                                     .setView(dialogView)
@@ -133,7 +138,13 @@ public class ListaComprasFragment extends Fragment {
                                             return;
                                         }
 
-                                        double quantidade = Double.parseDouble(qtdStr);
+                                        double quantidade;
+                                        try {
+                                            quantidade = Double.parseDouble(qtdStr);
+                                        } catch (Exception e) {
+                                            Toast.makeText(getContext(), "Quantidade inválida", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
 
                                         adicionarProduto(produtoSelecionado.getId(), quantidade);
                                     })
@@ -160,7 +171,7 @@ public class ListaComprasFragment extends Fragment {
     private void adicionarProduto(int produtoId, double quantidade) {
 
         ListaProduto body = new ListaProduto(produtoId, quantidade);
-        body.setLista_id(listaId); // ✅ ISTO resolve o required no Yii2
+        body.setLista_id(listaId);
 
         RetrofitClient.getApiService(requireContext())
                 .addProdutoLista(listaId, body)
@@ -171,7 +182,7 @@ public class ListaComprasFragment extends Fragment {
 
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), "Produto adicionado!", Toast.LENGTH_SHORT).show();
-                            carregarProdutos();
+                            carregarProdutos(); // vai atualizar e guardar cache
                         } else {
                             Toast.makeText(getContext(),
                                     "Erro POST: " + response.code(),
@@ -189,9 +200,8 @@ public class ListaComprasFragment extends Fragment {
                 });
     }
 
-
     // -------------------------
-    // GET - carregar produtos
+    // GET - carregar produtos (API)
     // -------------------------
     private void carregarProdutos() {
         RetrofitClient.getApiService(requireContext())
@@ -205,48 +215,12 @@ public class ListaComprasFragment extends Fragment {
 
                             List<ListaProduto> listaProdutos = response.body();
 
+                            // ✅ guardar cache
+                            guardarProdutosNaCache(listaProdutos);
+
                             rvProdutos.setAdapter(new ListaProdutoAdapter(
                                     listaProdutos,
-                                    new ListaProdutoAdapter.OnListaProdutoListener() {
-
-                                        @Override
-                                        public void onVer(ListaProduto item) {
-                                            Toast.makeText(getContext(),
-                                                    item.getProduto_nome(),
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-
-                                        @Override
-                                        public void onEditar(ListaProduto item) {
-                                            dialogEditarQuantidade(item); // PUT
-                                        }
-
-                                        @Override
-                                        public void onApagar(ListaProduto item) {
-                                            confirmarApagar(item); // DELETE
-                                        }
-
-                                        @Override
-                                        public void onMais(ListaProduto item) {
-                                            double atual = item.getQuantidade();
-                                            item.setQuantidade(atual + 1);
-                                            atualizarItem(item); // PUT
-                                        }
-
-                                        @Override
-                                        public void onMenos(ListaProduto item) {
-                                            double atual = item.getQuantidade();
-
-                                            if (atual > 1) {
-                                                item.setQuantidade(atual - 1);
-                                                atualizarItem(item); // PUT
-                                            } else {
-                                                Toast.makeText(getContext(),
-                                                        "Quantidade mínima = 1",
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    }
+                                    criarListenerAdapter()
                             ));
 
                         } else {
@@ -259,12 +233,57 @@ public class ListaComprasFragment extends Fragment {
                     @Override
                     public void onFailure(Call<List<ListaProduto>> call, Throwable t) {
                         if (!isAdded()) return;
+
                         Toast.makeText(getContext(),
-                                "Falha: " + t.getMessage(),
+                                "Sem ligação. A mostrar cache local.",
                                 Toast.LENGTH_LONG).show();
+
                         Log.e("LISTA_PRODUTOS", "Erro retrofit", t);
                     }
                 });
+    }
+
+    private ListaProdutoAdapter.OnListaProdutoListener criarListenerAdapter() {
+        return new ListaProdutoAdapter.OnListaProdutoListener() {
+
+            @Override
+            public void onVer(ListaProduto item) {
+                Toast.makeText(getContext(),
+                        item.getProduto_nome(),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onEditar(ListaProduto item) {
+                dialogEditarQuantidade(item); // PUT
+            }
+
+            @Override
+            public void onApagar(ListaProduto item) {
+                confirmarApagar(item); // DELETE
+            }
+
+            @Override
+            public void onMais(ListaProduto item) {
+                double atual = item.getQuantidade();
+                item.setQuantidade(atual + 1);
+                atualizarItem(item); // PUT
+            }
+
+            @Override
+            public void onMenos(ListaProduto item) {
+                double atual = item.getQuantidade();
+
+                if (atual > 1) {
+                    item.setQuantidade(atual - 1);
+                    atualizarItem(item); // PUT
+                } else {
+                    Toast.makeText(getContext(),
+                            "Quantidade mínima = 1",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
     }
 
     // -------------------------
@@ -287,9 +306,15 @@ public class ListaComprasFragment extends Fragment {
                         return;
                     }
 
-                    double novaQtd = Double.parseDouble(txt);
-                    item.setQuantidade(novaQtd);
+                    double novaQtd;
+                    try {
+                        novaQtd = Double.parseDouble(txt);
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Quantidade inválida", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
+                    item.setQuantidade(novaQtd);
                     atualizarItem(item);
                 })
                 .setNegativeButton("Cancelar", null)
@@ -305,7 +330,7 @@ public class ListaComprasFragment extends Fragment {
                         if (!isAdded()) return;
 
                         if (response.isSuccessful()) {
-                            carregarProdutos();
+                            carregarProdutos(); // atualiza e cache
                         } else {
                             Toast.makeText(getContext(),
                                     "Erro ao atualizar (PUT). Código: " + response.code(),
@@ -344,7 +369,7 @@ public class ListaComprasFragment extends Fragment {
                         if (!isAdded()) return;
 
                         if (response.isSuccessful()) {
-                            carregarProdutos();
+                            carregarProdutos(); // atualiza e cache
                         } else {
                             Toast.makeText(getContext(),
                                     "Erro ao apagar (DELETE). Código: " + response.code(),
@@ -360,5 +385,70 @@ public class ListaComprasFragment extends Fragment {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    // -------------------------
+    // CACHE ROOM
+    // -------------------------
+    private void carregarProdutosDaCache() {
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        new Thread(() -> {
+            try {
+                List<ListaProdutoCacheEntity> cached = db.listaProdutoCacheDao().getByLista(listaId);
+
+                if (cached == null || cached.isEmpty()) return;
+                if (!isAdded()) return;
+
+                ArrayList<ListaProduto> listaCache = new ArrayList<>();
+
+                for (ListaProdutoCacheEntity e : cached) {
+
+                    ListaProduto lp = new ListaProduto(e.produtoId, e.quantidade);
+
+                    // se existirem setters, usa:
+                    lp.setId(e.id);
+                    lp.setLista_id(e.listaId);
+                    lp.setProduto_nome(e.produtoNome);
+
+                    listaCache.add(lp);
+                }
+
+                requireActivity().runOnUiThread(() -> rvProdutos.setAdapter(
+                        new ListaProdutoAdapter(listaCache, criarListenerAdapter())
+                ));
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void guardarProdutosNaCache(List<ListaProduto> listaProdutosApi) {
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        new Thread(() -> {
+            try {
+                ArrayList<ListaProdutoCacheEntity> entities = new ArrayList<>();
+
+                for (ListaProduto lp : listaProdutosApi) {
+                    if (lp == null) continue;
+
+                    entities.add(new ListaProdutoCacheEntity(
+                            lp.getId(),
+                            listaId,
+                            lp.getProduto_id(),
+                            lp.getProduto_nome() == null ? "" : lp.getProduto_nome(),
+                            lp.getQuantidade()
+                    ));
+                }
+
+                db.listaProdutoCacheDao().deleteByLista(listaId);
+                db.listaProdutoCacheDao().insertAll(entities);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 }

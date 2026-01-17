@@ -16,6 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+
+import pt.ipleiria.estg.dei.amsi.homepantry.api.CachePrefs;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.AppDatabase;
+
 
 import java.util.List;
 
@@ -189,6 +194,9 @@ public class ListaListasFragment extends Fragment {
     private void carregarListas() {
         int casaId = 1;
 
+        // ✅ mostrar cache primeiro
+        carregarListasDaCache(casaId);
+
         RetrofitClient.getApiService(requireContext())
                 .getListas(casaId)
                 .enqueue(new Callback<List<Lista>>() {
@@ -199,10 +207,14 @@ public class ListaListasFragment extends Fragment {
 
                         if (response.isSuccessful() && response.body() != null) {
 
-                            rvListas.setAdapter(new ListaAdapter(
-                                    response.body(),
+                            List<Lista> body = response.body();
 
-                                    // clique normal -> abrir lista
+                            // ✅ guardar cache
+                            guardarListasNaCache(casaId, body);
+
+                            rvListas.setAdapter(new ListaAdapter(
+                                    body,
+
                                     lista -> {
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("listaId", lista.getId());
@@ -212,7 +224,6 @@ public class ListaListasFragment extends Fragment {
                                                 .navigate(R.id.action_ListaListasFragment_to_ListaComprasFragment, bundle);
                                     },
 
-                                    // long click -> editar/apagar (dialog)
                                     lista -> abrirDialogLista(lista)
                             ));
 
@@ -228,11 +239,89 @@ public class ListaListasFragment extends Fragment {
                         if (!isAdded()) return;
 
                         Toast.makeText(getContext(),
-                                "Falha Retrofit: " + t.getMessage(),
+                                "Sem ligação. A mostrar cache local.",
                                 Toast.LENGTH_LONG).show();
 
                         Log.e("LISTAS", "Erro Retrofit", t);
                     }
                 });
+    }
+    // -------------------- CACHE (ROOM) --------------------
+
+    private void carregarListasDaCache(int casaId) {
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        new Thread(() -> {
+            try {
+                List<pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.ListaCacheEntity> cached =
+                        db.listaCacheDao().getByCasa(casaId);
+
+                if (cached == null || cached.isEmpty()) return;
+                if (!isAdded()) return;
+
+                ArrayList<Lista> listaCache = new ArrayList<>();
+
+                for (pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.ListaCacheEntity e : cached) {
+                    Lista l = new Lista();
+                    l.setId(e.id);
+                    l.setNome(e.nome);
+                    l.setTipo(e.tipo);
+                    listaCache.add(l);
+                }
+
+                requireActivity().runOnUiThread(() -> {
+                    rvListas.setAdapter(new ListaAdapter(
+                            listaCache,
+
+                            lista -> {
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("listaId", lista.getId());
+                                bundle.putString("nomeLista", lista.getNome());
+
+                                NavHostFragment.findNavController(ListaListasFragment.this)
+                                        .navigate(R.id.action_ListaListasFragment_to_ListaComprasFragment, bundle);
+                            },
+
+                            lista -> abrirDialogLista(lista)
+                    ));
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void guardarListasNaCache(int casaId, List<Lista> listasApi) {
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        CachePrefs prefs = new CachePrefs(requireContext());
+
+        new Thread(() -> {
+            try {
+                ArrayList<pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.ListaCacheEntity> entities =
+                        new ArrayList<>();
+
+                for (Lista l : listasApi) {
+                    if (l == null) continue;
+
+                    entities.add(new pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.ListaCacheEntity(
+                            l.getId(),
+                            l.getNome() == null ? "" : l.getNome(),
+                            l.getTipo() == null ? "" : l.getTipo(),
+                            casaId
+                    ));
+                }
+
+                db.listaCacheDao().deleteByCasa(casaId);
+                db.listaCacheDao().insertAll(entities);
+
+                prefs.setLastListasSync(System.currentTimeMillis());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
