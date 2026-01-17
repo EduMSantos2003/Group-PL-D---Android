@@ -21,22 +21,6 @@
             android:gravity="center"
             android:layout_marginTop="16dp"/>
 
-        <!-- Botão + alinhado à direita -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingEnd="16dp">
-
-            <ImageButton
-                android:id="@+id/btn_adicionar_categoria"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/desc_adicionar_categoria"
-                android:src="@drawable/logoipl"/>
-        </LinearLayout>
-
         <!-- Barra de pesquisa -->
         <EditText
             android:id="@+id/edt_pesquisa_categorias"
