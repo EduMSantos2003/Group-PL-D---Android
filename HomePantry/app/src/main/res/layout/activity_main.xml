@@ -43,6 +43,12 @@
             android:id="@+id/btnStockProduto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/txt_stock" />
+
+        <Button
+            android:id="@+id/btnListaProdutos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/txt_produto" />
 
         <Button

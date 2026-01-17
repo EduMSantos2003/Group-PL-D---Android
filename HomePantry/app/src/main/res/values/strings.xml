@@ -4,6 +4,7 @@
 
     <!-- activity.main -->
     <string name="txt_HomePantry">Bem-Vindo\nHomePantry</string>
+    <string name="txt_stock">Stock</string>
     <string name="txt_produto">Produtos</string>
     <string name="txt_listas">Listas</string>
     <string name="txt_categorias">Categorias</string>

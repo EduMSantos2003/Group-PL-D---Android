@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/ListaProdutosFragment">
+    app:startDestination="@id/ListaStockFragment">
 
     <!-- DASHBOARD LOCAL -->
     <fragment
@@ -48,8 +48,12 @@
             app:destination="@id/ListasComprasFragment" />
     </fragment>
 
-
-
+    <!-- STOCK PRODUTOS -->
+    <fragment
+        android:id="@+id/ListaStockFragment"
+        android:name="pt.ipleiria.estg.dei.amsi.homepantry.ListaStockFragment"
+        android:label="Stock"
+        tools:layout="@layout/fragment_lista_stock" />
 
     <!-- LISTA DE PRODUTOS -->
     <fragment

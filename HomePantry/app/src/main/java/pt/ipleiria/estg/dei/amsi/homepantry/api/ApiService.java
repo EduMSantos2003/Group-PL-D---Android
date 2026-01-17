@@ -10,6 +10,8 @@ import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.Lista;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.ListaProduto;
 
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.StockProduto;
+import pt.ipleiria.estg.dei.amsi.homepantry.modelos.StockUpdate;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -20,10 +22,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-
-    @POST("api/auth/login")
-    Call<LoginResponse> login(@Body LoginRequest body);
-
 
     @GET("api/produto")
     Call<List<Produto>> getProdutos();
@@ -41,6 +39,12 @@ public interface ApiService {
     @POST("api/lista")
     Call<Lista> createLista(@Body Lista lista);
 
+    @PUT("api/lista/{id}")
+    Call<Lista> updateLista(
+            @Path("id") int listaId,
+            @Body Lista lista
+    );
+
     @DELETE("api/lista/{id}")
     Call<Void> deleteLista(@Path("id") int listaId);
 
@@ -52,7 +56,16 @@ public interface ApiService {
     @POST("api/lista/{id}/adicionar-produto")
     Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
 
-    @PUT("api/lista/{id}")
-    Call<Lista> updateLista(@Path("id") int id, @Body Lista lista);
+    @GET("api/stock-produtos")
+    Call<List<StockProduto>> getStockProdutos(
+            @Query("local_id") Integer localId,
+            @Query("casa_id") Integer casaId
+    );
+
+    @PUT("api/stock-produtos/{id}")
+    Call<StockProduto> updateStock(
+            @Path("id") int stockId,
+            @Body StockUpdate body
+    );
 
 }
