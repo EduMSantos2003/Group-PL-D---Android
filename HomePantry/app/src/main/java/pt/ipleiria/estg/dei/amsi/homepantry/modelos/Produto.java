@@ -11,6 +11,11 @@ public class Produto {
     private String validade;
     private String imagem;
 
+    @Override
+    public String toString() {
+        return nome;
+    }
+
     // 🔹 CONSTRUTOR VAZIO (obrigatório para Retrofit)
     public Produto() {
     }
