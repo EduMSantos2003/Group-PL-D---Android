@@ -68,4 +68,7 @@ public interface ApiService {
             @Body StockUpdate body
     );
 
+    @POST("api/login")
+    Call<LoginResponse> login(@Body LoginRequest request);
+
 }
