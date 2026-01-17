@@ -26,7 +26,7 @@ public class RetrofitClient {
                     .create();
 
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new AuthInterceptor(context)) // ✅ mete Authorization automaticamente
+                    .addInterceptor(new AuthInterceptor(context)) //  mete Authorization automaticamente
                     .build();
 
             retrofit = new Retrofit.Builder()

@@ -51,24 +51,32 @@ public interface ApiService {
     @DELETE("api/lista/{id}")
     Call<Void> deleteLista(@Path("id") int listaId);
 
-    //  PRODUTOS DE UMA LISTA (Detail)
-    @GET("api/lista/{id}/produtos")
-    Call<List<ListaProduto>> getProdutosLista(@Path("id") int listaId);
-
-
-    @POST("api/lista/{id}/adicionar-produto")
-    Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
-
-    @GET("api/stock-produtos")
+    @GET("api/stock-produto")
     Call<List<StockProduto>> getStockProdutos(
             @Query("local_id") Integer localId,
             @Query("casa_id") Integer casaId
     );
 
-    @PUT("api/stock-produtos/{id}")
+    @PUT("api/stock-produto/{id}")
     Call<StockProduto> updateStock(
             @Path("id") int stockId,
             @Body StockUpdate body
     );
+
+    //  GET produtos dentro de uma lista
+    @GET("api/lista/{id}/produtos")
+    Call<List<ListaProduto>> getProdutosLista(@Path("id") int listaId);
+
+    //  POST adicionar produto a uma lista
+    @POST("api/lista/{id}/produtos")
+    Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
+
+    //  PUT atualizar um item lista_produto
+    @PUT("api/lista-produto/{id}")
+    Call<ListaProduto> updateListaProduto(@Path("id") int id, @Body ListaProduto body);
+
+    //  DELETE remover um item lista_produto
+    @DELETE("api/lista-produto/{id}")
+    Call<Void> deleteListaProduto(@Path("id") int id);
 
 }
