@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                             session.saveLogin(
                                     response.body().getUser_id(),
                                     response.body().getUsername(),
+                                    email,
                                     response.body().getToken()
                             );
 
