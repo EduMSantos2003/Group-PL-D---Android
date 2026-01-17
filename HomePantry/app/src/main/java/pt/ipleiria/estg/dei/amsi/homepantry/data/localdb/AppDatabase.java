@@ -11,12 +11,16 @@ import androidx.room.RoomDatabase;
         ProdutoCacheEntity.class,
         ListaCacheEntity.class,
         ListaProdutoCacheEntity.class,
-        LocalCacheEntity.class
-}, version = 5, exportSchema = false)
+        LocalCacheEntity.class,
+        CategoriaCacheEntity.class
+}, version = 6, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
+
+    public abstract CategoriaCacheDao categoriaCacheDao();
+
 
     public abstract ListaCacheDao listaCacheDao();
 

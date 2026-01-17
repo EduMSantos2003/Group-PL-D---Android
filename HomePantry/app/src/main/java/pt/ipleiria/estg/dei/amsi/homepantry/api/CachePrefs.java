@@ -11,6 +11,19 @@ public class CachePrefs {
     private static final String KEY_LAST_PRODUTOS_SYNC = "last_produtos_sync";
     private static final String KEY_LAST_LISTAS_SYNC = "last_listas_sync";
 
+    private static final String KEY_LAST_CATEGORIAS_SYNC = "last_categorias_sync";
+
+    public void setLastCategoriasSync(long timeMillis) {
+        prefs.edit().putLong(KEY_LAST_CATEGORIAS_SYNC, timeMillis).apply();
+    }
+
+    public long getLastCategoriasSync() {
+        return prefs.getLong(KEY_LAST_CATEGORIAS_SYNC, 0);
+    }
+
+
+    private static final String KEY_SELECTED_LOCAL_ID = "selected_local_id";
+
     private final SharedPreferences prefs;
 
     public CachePrefs(Context context) {
@@ -51,6 +64,14 @@ public class CachePrefs {
 
     public long getLastListaProdutosSync(int listaId) {
         return prefs.getLong("last_lista_" + listaId + "_sync", 0);
+    }
+
+    // ---------------- SELECTED LOCAL (OPCIONAL) ----------------
     public void setSelectedLocalId(int localId) {
+        prefs.edit().putInt(KEY_SELECTED_LOCAL_ID, localId).apply();
+    }
+
+    public int getSelectedLocalId() {
+        return prefs.getInt(KEY_SELECTED_LOCAL_ID, -1);
     }
 }
