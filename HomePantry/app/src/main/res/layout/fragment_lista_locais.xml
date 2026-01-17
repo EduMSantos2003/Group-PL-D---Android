@@ -21,16 +21,6 @@
             android:textStyle="bold"
             android:padding="16dp" />
 
-        <!-- Barra de pesquisa -->
-        <EditText
-            android:id="@+id/et_pesquisar_local"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Pesquisar"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:paddingHorizontal="16dp" />
-
         <!-- Lista de locais -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_listas_locais"

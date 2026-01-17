@@ -13,15 +13,6 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
-        <!-- IMAGEM -->
-<!--        <ImageView-->
-<!--            android:id="@+id/img_produto"-->
-<!--            android:layout_width="64dp"-->
-<!--            android:layout_height="64dp"-->
-<!--            android:contentDescription="@string/app_name"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:src="@drawable/ic_produto_placeholder" />-->
-
         <!-- CONTEÚDO -->
         <LinearLayout
             android:layout_width="0dp"
@@ -131,14 +122,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center">
-
-            <ImageButton
-                android:id="@+id/btn_ver"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_view"
-                android:contentDescription="Ver" />
 
             <ImageButton
                 android:id="@+id/btn_editar"

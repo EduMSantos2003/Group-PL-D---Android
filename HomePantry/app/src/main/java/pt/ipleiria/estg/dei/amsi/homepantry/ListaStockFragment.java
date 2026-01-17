@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.adapters.StockProdutoAdapter;
 import pt.ipleiria.estg.dei.amsi.homepantry.api.RetrofitClient;
@@ -27,6 +29,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ListaStockFragment extends Fragment {
+
+    private final Map<Integer, String> produtoNomePorId = new HashMap<>();
+    private final Map<Integer, String> localNomePorId = new HashMap<>();
+
+    private boolean produtosCarregados = false;
+    private boolean locaisCarregados = false;
 
     private RecyclerView rvStock;
     private StockProdutoAdapter adapter;
@@ -55,10 +63,6 @@ public class ListaStockFragment extends Fragment {
         rvStock.setHasFixedSize(true);
 
         adapter = new StockProdutoAdapter(lista, new StockProdutoAdapter.OnStockActionListener() {
-            @Override
-            public void onVer(@NonNull StockProduto stock) {
-                // Se quiseres abrir detalhe do produto, diz-me e eu ligo isso ao teu fluxo.
-            }
 
             @Override
             public void onEditar(@NonNull StockProduto stock) {
@@ -137,7 +141,8 @@ public class ListaStockFragment extends Fragment {
 
                         // IMPORTANTÍSSIMO: como o adapter guarda uma lista interna,
                         // temos de usar setItens()
-                        adapter.setItens(lista);
+//                        adapter.setItens(lista);
+                        carregarProdutosELocais();
                     }
 
                     @Override
@@ -150,6 +155,91 @@ public class ListaStockFragment extends Fragment {
                     }
                 });
     }
+    private void carregarProdutosELocais() {
+
+        // 1) Produtos
+        RetrofitClient.getApiService(requireContext())
+                .getProdutos()
+                .enqueue(new Callback<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto>>() {
+                    @Override
+                    public void onResponse(Call<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto>> call,
+                                           Response<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto>> response) {
+
+                        if (!isAdded()) return;
+
+                        if (response.isSuccessful() && response.body() != null) {
+                            produtoNomePorId.clear();
+                            for (pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto p : response.body()) {
+                                produtoNomePorId.put(p.getId(), p.getNome());
+                            }
+                            produtosCarregados = true;
+                        }
+
+                        tentarAplicarNomesEAtualizar();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Produto>> call, Throwable t) {
+                        if (!isAdded()) return;
+                        Toast.makeText(requireContext(),
+                                "Falha a carregar produtos: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                        tentarAplicarNomesEAtualizar();
+                    }
+                });
+
+        // 2) Locais
+        RetrofitClient.getApiService(requireContext())
+                .getLocais()
+                .enqueue(new Callback<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local>>() {
+                    @Override
+                    public void onResponse(Call<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local>> call,
+                                           Response<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local>> response) {
+
+                        if (!isAdded()) return;
+
+                        if (response.isSuccessful() && response.body() != null) {
+                            localNomePorId.clear();
+                            for (pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local l : response.body()) {
+                                localNomePorId.put(l.getId(), l.getNome());
+                            }
+                            locaisCarregados = true;
+                        }
+
+                        tentarAplicarNomesEAtualizar();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<pt.ipleiria.estg.dei.amsi.homepantry.modelos.Local>> call, Throwable t) {
+                        if (!isAdded()) return;
+                        Toast.makeText(requireContext(),
+                                "Falha a carregar locais: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                        tentarAplicarNomesEAtualizar();
+                    }
+                });
+    }
+
+    private void tentarAplicarNomesEAtualizar() {
+        // Quando os dois tiverem tentado carregar, já dá para preencher o máximo possível
+        if (!produtosCarregados && !locaisCarregados) return;
+
+        for (StockProduto sp : lista) {
+            // Nome do produto pelo produto_id
+            String nomeProd = produtoNomePorId.get(sp.getProduto_id());
+            if (nomeProd != null) sp.setNome(nomeProd);
+
+            // Nome do local pelo local_id (se existir)
+            Integer lid = sp.getLocal_id();
+            if (lid != null) {
+                String nomeLoc = localNomePorId.get(lid);
+                if (nomeLoc != null) sp.setLocal(nomeLoc);
+            }
+        }
+
+        adapter.setItens(lista);
+    }
+
 
     // -------------------- PUT STOCK (+ / -) --------------------
 

@@ -60,10 +60,6 @@ public class DashboardLocalFragment extends Fragment {
         listaStock = new ArrayList<>();
 
         adapter = new StockProdutoAdapter(listaStock, new StockProdutoAdapter.OnStockActionListener() {
-            @Override
-            public void onVer(@NonNull StockProduto stock) {
-                Toast.makeText(requireContext(), stock.getNome(), Toast.LENGTH_SHORT).show();
-            }
 
             @Override
             public void onEditar(@NonNull StockProduto stock) {

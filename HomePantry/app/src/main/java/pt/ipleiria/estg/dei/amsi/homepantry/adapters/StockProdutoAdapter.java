@@ -19,7 +19,7 @@ import pt.ipleiria.estg.dei.amsi.homepantry.modelos.StockProduto;
 public class StockProdutoAdapter extends RecyclerView.Adapter<StockProdutoAdapter.StockViewHolder> {
 
     public interface OnStockActionListener {
-        void onVer(@NonNull StockProduto stock);
+//        void onVer(@NonNull StockProduto stock);
         void onEditar(@NonNull StockProduto stock);
         void onApagar(@NonNull StockProduto stock);
         void onAumentar(@NonNull StockProduto stock);
@@ -94,7 +94,7 @@ public class StockProdutoAdapter extends RecyclerView.Adapter<StockProdutoAdapte
         h.btnMenos.setOnClickListener(v -> listener.onDiminuir(s));
 
         // Ações laterais
-        h.btnVer.setOnClickListener(v -> listener.onVer(s));
+//        h.btnVer.setOnClickListener(v -> listener.onVer(s));
         h.btnEditar.setOnClickListener(v -> listener.onEditar(s));
         h.btnApagar.setOnClickListener(v -> listener.onApagar(s));
     }
@@ -124,7 +124,7 @@ public class StockProdutoAdapter extends RecyclerView.Adapter<StockProdutoAdapte
             txtLocal = itemView.findViewById(R.id.txt_local);
             txtValidade = itemView.findViewById(R.id.txt_validade);
 
-            btnVer = itemView.findViewById(R.id.btn_ver);
+
             btnEditar = itemView.findViewById(R.id.btn_editar);
             btnApagar = itemView.findViewById(R.id.btn_apagar);
 
