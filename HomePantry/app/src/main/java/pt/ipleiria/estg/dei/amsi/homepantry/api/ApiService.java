@@ -23,6 +23,9 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    @POST("api/auth/login")
+    Call<LoginResponse> login(@Body LoginRequest body);
+
     @GET("api/produto")
     Call<List<Produto>> getProdutos();
 
