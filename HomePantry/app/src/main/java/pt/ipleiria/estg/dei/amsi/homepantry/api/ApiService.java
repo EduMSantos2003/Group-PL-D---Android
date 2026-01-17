@@ -52,16 +52,9 @@ public interface ApiService {
     Call<Void> deleteLista(@Path("id") int listaId);
 
     //  PRODUTOS DE UMA LISTA (Detail)
-    @GET("api/lista/{id}/produtos")
-    Call<List<ListaProduto>> getProdutosLista(@Path("id") int listaId);
+
     
-    @POST("api/lista/{id}/adicionar-produto")
-    Call<ListaProduto> addProdutoLista(@Path("id") int listaId, @Body ListaProduto body);
-
-    @GET("api/stock-produtos")
-
     @GET("api/stock-produto")
-
     Call<List<StockProduto>> getStockProdutos(
             @Query("local_id") Integer localId,
             @Query("casa_id") Integer casaId
