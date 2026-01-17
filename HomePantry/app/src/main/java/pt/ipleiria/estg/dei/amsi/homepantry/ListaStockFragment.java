@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ipleiria.estg.dei.amsi.homepantry.adapters.StockProdutoAdapter;
+import pt.ipleiria.estg.dei.amsi.homepantry.api.CachePrefs;
 import pt.ipleiria.estg.dei.amsi.homepantry.api.RetrofitClient;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.AppDatabase;
+import pt.ipleiria.estg.dei.amsi.homepantry.data.localdb.StockCacheEntity;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.StockProduto;
 import pt.ipleiria.estg.dei.amsi.homepantry.modelos.StockUpdate;
 import retrofit2.Call;
@@ -39,10 +42,8 @@ public class ListaStockFragment extends Fragment {
     private RecyclerView rvStock;
     private StockProdutoAdapter adapter;
 
-    // Lista "fonte" (no fragment)
     private final ArrayList<StockProduto> lista = new ArrayList<>();
 
-    // Evita spam de cliques em +/-
     private boolean aAtualizar = false;
 
     public ListaStockFragment() {}
@@ -71,7 +72,6 @@ public class ListaStockFragment extends Fragment {
 
             @Override
             public void onApagar(@NonNull StockProduto stock) {
-                // Como tu pediste “editar para mais ou menos”, o apagar pode ser “meter a 0”
                 alterarQuantidadeDireta(stock, 0);
             }
 
@@ -102,8 +102,6 @@ public class ListaStockFragment extends Fragment {
         Integer casaId = null;
         Integer localId = null;
 
-        // Se mais tarde quiseres filtrar por casa/local:
-        // - passa por argumentos (Bundle) e eu ajusto o fluxo contigo
         if (getArguments() != null) {
             if (getArguments().containsKey("casa_id")) {
                 casaId = getArguments().getInt("casa_id");
@@ -113,8 +111,18 @@ public class ListaStockFragment extends Fragment {
             }
         }
 
+        //  NÃO INVENTAR valores tipo 0 ou 1
+        final Integer casaIdFinal = casaId;
+        final Integer localIdFinal = localId;
+
+        //  cache: se não houver casaId, usa 0 só para guardar localmente
+        final int casaIdCache = (casaIdFinal == null) ? 0 : casaIdFinal;
+
+        //  mostra cache primeiro
+        carregarStockDaCache(casaIdCache);
+
         RetrofitClient.getApiService(requireContext())
-                .getStockProdutos(localId, casaId)
+                .getStockProdutos(localIdFinal, casaIdFinal) //  volta ao que funcionava
                 .enqueue(new Callback<List<StockProduto>>() {
                     @Override
                     public void onResponse(Call<List<StockProduto>> call,
@@ -131,7 +139,6 @@ public class ListaStockFragment extends Fragment {
                         List<StockProduto> body = response.body();
                         if (body == null) body = new ArrayList<>();
 
-                        // Atualiza lista fonte (apenas quantidade > 0)
                         lista.clear();
                         for (StockProduto s : body) {
                             if (s != null && s.getQuantidade() > 0) {
@@ -139,23 +146,30 @@ public class ListaStockFragment extends Fragment {
                             }
                         }
 
-                        // IMPORTANTÍSSIMO: como o adapter guarda uma lista interna,
-                        // temos de usar setItens()
-//                        adapter.setItens(lista);
+                        //  guardar cache quando API funciona
+                        guardarStockNaCache(casaIdCache, body);
+
                         carregarProdutosELocais();
                     }
 
                     @Override
                     public void onFailure(Call<List<StockProduto>> call, Throwable t) {
                         if (!isAdded()) return;
-
                         Toast.makeText(requireContext(),
                                 "Falha de ligação: " + t.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
+
+
+
     private void carregarProdutosELocais() {
+
+        // reset flags para não ficar preso
+        produtosCarregados = false;
+        locaisCarregados = false;
 
         // 1) Produtos
         RetrofitClient.getApiService(requireContext())
@@ -184,6 +198,7 @@ public class ListaStockFragment extends Fragment {
                         Toast.makeText(requireContext(),
                                 "Falha a carregar produtos: " + t.getMessage(),
                                 Toast.LENGTH_LONG).show();
+                        produtosCarregados = true;
                         tentarAplicarNomesEAtualizar();
                     }
                 });
@@ -215,21 +230,19 @@ public class ListaStockFragment extends Fragment {
                         Toast.makeText(requireContext(),
                                 "Falha a carregar locais: " + t.getMessage(),
                                 Toast.LENGTH_LONG).show();
+                        locaisCarregados = true;
                         tentarAplicarNomesEAtualizar();
                     }
                 });
     }
 
     private void tentarAplicarNomesEAtualizar() {
-        // Quando os dois tiverem tentado carregar, já dá para preencher o máximo possível
-        if (!produtosCarregados && !locaisCarregados) return;
+        if (!produtosCarregados || !locaisCarregados) return;
 
         for (StockProduto sp : lista) {
-            // Nome do produto pelo produto_id
             String nomeProd = produtoNomePorId.get(sp.getProduto_id());
             if (nomeProd != null) sp.setNome(nomeProd);
 
-            // Nome do local pelo local_id (se existir)
             Integer lid = sp.getLocal_id();
             if (lid != null) {
                 String nomeLoc = localNomePorId.get(lid);
@@ -239,7 +252,6 @@ public class ListaStockFragment extends Fragment {
 
         adapter.setItens(lista);
     }
-
 
     // -------------------- PUT STOCK (+ / -) --------------------
 
@@ -257,7 +269,6 @@ public class ListaStockFragment extends Fragment {
             return;
         }
 
-        // Update otimista (UI reage logo)
         stock.setQuantidade(novaQtd);
         adapter.setItens(lista);
 
@@ -270,7 +281,6 @@ public class ListaStockFragment extends Fragment {
                         aAtualizar = false;
 
                         if (!response.isSuccessful()) {
-                            // rollback
                             stock.setQuantidade(antigaQtd);
                             adapter.setItens(lista);
 
@@ -280,12 +290,10 @@ public class ListaStockFragment extends Fragment {
                             return;
                         }
 
-                        // Se a API devolve o objeto atualizado, sincroniza:
                         if (response.body() != null) {
                             stock.setQuantidade(response.body().getQuantidade());
                         }
 
-                        // Regra: só listar positivos
                         if (stock.getQuantidade() <= 0) {
                             removerDaListaPorId(stock.getId());
                         }
@@ -298,7 +306,6 @@ public class ListaStockFragment extends Fragment {
                         if (!isAdded()) return;
                         aAtualizar = false;
 
-                        // rollback
                         stock.setQuantidade(antigaQtd);
                         adapter.setItens(lista);
 
@@ -322,7 +329,6 @@ public class ListaStockFragment extends Fragment {
 
         int antigaQtd = stock.getQuantidade();
 
-        // Update otimista
         stock.setQuantidade(novaQtd);
         adapter.setItens(lista);
 
@@ -411,5 +417,80 @@ public class ListaStockFragment extends Fragment {
                     alterarQuantidadeDireta(stock, novaQtd);
                 })
                 .show();
+    }
+
+    // -------------------- CACHE ROOM --------------------
+
+    private void carregarStockDaCache(Integer casaId) {
+        if (casaId == null) return;
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+
+        new Thread(() -> {
+            try {
+                List<StockCacheEntity> cached = db.stockCacheDao().getStockByCasa(casaId);
+                if (cached == null || cached.isEmpty()) return;
+
+                ArrayList<StockProduto> listaCache = new ArrayList<>();
+
+                for (StockCacheEntity e : cached) {
+                    StockProduto sp = new StockProduto();
+                    sp.setNome(e.nome);
+                    sp.setQuantidade(e.quantidade);
+                    listaCache.add(sp);
+                }
+
+                if (!isAdded()) return;
+
+                requireActivity().runOnUiThread(() -> {
+                    lista.clear();
+                    lista.addAll(listaCache);
+                    adapter.setItens(lista);
+                });
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void guardarStockNaCache(Integer casaId, List<StockProduto> stockDaApi) {
+        if (casaId == null) return;
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        CachePrefs cachePrefs = new CachePrefs(requireContext());
+
+        new Thread(() -> {
+            try {
+                List<StockCacheEntity> entities = new ArrayList<>();
+
+                for (StockProduto s : stockDaApi) {
+                    if (s == null) continue;
+                    if (s.getQuantidade() <= 0) continue;
+
+                    String nomeFinal = s.getNome();
+
+                    if ((nomeFinal == null || nomeFinal.trim().isEmpty()) && s.getProduto_id() != 0) {
+                        String nomeMap = produtoNomePorId.get(s.getProduto_id());
+                        if (nomeMap != null) nomeFinal = nomeMap;
+                    }
+
+                    entities.add(new StockCacheEntity(
+                            s.getProduto_id(),   // usar produto_id como id da cache
+                            nomeFinal == null ? "" : nomeFinal,
+                            s.getQuantidade(),
+                            casaId
+                    ));
+                }
+
+                db.stockCacheDao().deleteByCasa(casaId);
+                db.stockCacheDao().insertAll(entities);
+
+                cachePrefs.setLastStockSync(System.currentTimeMillis());
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 }
