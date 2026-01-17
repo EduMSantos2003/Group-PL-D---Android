@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
+
     <group android:checkableBehavior="single">
 
         <item
@@ -16,7 +17,6 @@
             android:id="@+id/ListaListasFragment"
             android:title="Listas" />
 
-
         <item
             android:id="@+id/ListaCategoriasFragment"
             android:title="Categorias" />
@@ -25,11 +25,16 @@
             android:id="@+id/ListaLocaisFragment"
             android:title="Locais" />
 
+        <!-- NOVO: CONFIG DO SERVIDOR -->
+        <item
+            android:id="@+id/configuracaoServidorFragment"
+            android:title="Configurar Servidor"
+            android:icon="@android:drawable/ic_menu_manage" />
+
         <item
             android:id="@+id/nav_logout"
             android:title="Logout"
             android:icon="@android:drawable/ic_lock_power_off"/>
-
 
     </group>
 

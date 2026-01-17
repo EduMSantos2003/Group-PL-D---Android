@@ -28,11 +28,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // se já tiver token guardado -> entra direto
-        //SessionManager session = new SessionManager(this);
-        //if (session.isLoggedIn()) {
-        //   abrirMain();
-        //    return;
-        // }
+        SessionManager session = new SessionManager(this);
+        if (session.isLoggedIn()) {
+           abrirMain();
+            return;
+        }
 
         setContentView(R.layout.activity_login);
 

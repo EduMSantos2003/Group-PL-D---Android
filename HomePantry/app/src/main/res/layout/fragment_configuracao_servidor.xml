@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Configuração do Servidor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Insere o URL base da API (deve acabar com /)"
+        android:paddingBottom="8dp" />
+
+    <EditText
+        android:id="@+id/edtBaseUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="http://192.168.1.10/.../index.php/"
+        android:inputType="textUri"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/btnGuardarServidor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:layout_marginTop="12dp" />
+
+</LinearLayout>
