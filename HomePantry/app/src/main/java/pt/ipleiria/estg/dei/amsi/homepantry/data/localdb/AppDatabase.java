@@ -7,8 +7,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 @Database(
-        entities = {StockCacheEntity.class, ProdutoCacheEntity.class},
-        version = 2,
+        entities = {StockCacheEntity.class, ProdutoCacheEntity.class, LocalCacheEntity.class},
+        version = 3,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract StockCacheDao stockCacheDao();
     public abstract ProdutoCacheDao produtoCacheDao();
+    public abstract LocalCacheDao localCacheDao();
 
     public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {

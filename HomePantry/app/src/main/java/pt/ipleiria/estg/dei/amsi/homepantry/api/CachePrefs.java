@@ -31,4 +31,7 @@ public class CachePrefs {
     public long getLastProdutosSync() {
         return prefs.getLong(KEY_LAST_PRODUTOS_SYNC, 0);
     }
+
+    public void setSelectedLocalId(int localId) {
+    }
 }
