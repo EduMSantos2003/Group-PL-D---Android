@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnRegister = findViewById(R.id.btnRegister);
 
         // preencher email guardado (apenas conveniência)
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -49,8 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         btnLogin.setOnClickListener(view -> doLogin());
-
-        btnRegister.setOnClickListener(view -> abrirCriarNovoUtilizador());
     }
 
     private void doLogin() {

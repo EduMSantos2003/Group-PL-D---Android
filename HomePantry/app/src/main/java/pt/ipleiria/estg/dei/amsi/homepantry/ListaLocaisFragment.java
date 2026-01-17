@@ -80,14 +80,6 @@ public class ListaLocaisFragment extends Fragment implements LocalListener {
     // ======================================================
     @Override
     public void onLocalClick(int localId, String nomeLocal) {
-        Toast.makeText(requireContext(), "Local: " + nomeLocal, Toast.LENGTH_SHORT).show();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt("localId", localId);
-        bundle.putString("nomeLocal", nomeLocal);
-
-        NavHostFragment.findNavController(this)
-                .navigate(R.id.action_listaLocais_to_dashboardLocal, bundle);
     }
 
     @Override
