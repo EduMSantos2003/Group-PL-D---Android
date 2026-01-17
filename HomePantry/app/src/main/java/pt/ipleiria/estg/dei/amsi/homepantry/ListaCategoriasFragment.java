@@ -42,13 +42,6 @@ public class ListaCategoriasFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Botão para navegar para Criar Categoria
-        ImageButton btnAdicionarCategoria = view.findViewById(R.id.btn_adicionar_categoria);
-        btnAdicionarCategoria.setOnClickListener(v ->
-                NavHostFragment.findNavController(ListaCategoriasFragment.this)
-                        .navigate(R.id.action_listaCategorias_to_criarNovaCategoria)
-        );
-
         // RecyclerView
         rvCategorias = view.findViewById(R.id.rv_listas_categorias);
         rvCategorias.setLayoutManager(new LinearLayoutManager(requireContext()));

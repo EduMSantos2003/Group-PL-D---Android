@@ -45,13 +45,6 @@ public class ListaLocaisFragment extends Fragment implements LocalListener {
     ) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton btnAdicionarLocal = view.findViewById(R.id.btn_adicionar_local);
-
-        btnAdicionarLocal.setOnClickListener(v ->
-                NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_listaLocais_to_criarNovoLocal)
-        );
-
         rvLocais = view.findViewById(R.id.rv_listas_locais);
         rvLocais.setLayoutManager(new LinearLayoutManager(getContext()));
 

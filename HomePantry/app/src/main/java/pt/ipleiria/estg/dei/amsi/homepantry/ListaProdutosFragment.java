@@ -50,16 +50,6 @@ public class ListaProdutosFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        // Botão adicionar produto
-        ImageButton btnAdicionarProduto =
-                view.findViewById(R.id.btn_adicionar_produto);
-
-        btnAdicionarProduto.setOnClickListener(v ->
-                NavHostFragment.findNavController(this)
-                        .navigate(
-                                R.id.action_listaProdutos_to_criarNovoProduto
-                        )
-        );
 
         // RecyclerView (ID CERTO do XML)
         recyclerView = view.findViewById(R.id.rv_lista_produtos);

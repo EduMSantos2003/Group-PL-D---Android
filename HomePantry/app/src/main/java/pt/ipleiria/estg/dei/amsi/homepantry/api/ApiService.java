@@ -53,7 +53,6 @@ public interface ApiService {
 
     //  PRODUTOS DE UMA LISTA (Detail)
 
-    
     @GET("api/stock-produto")
     Call<List<StockProduto>> getStockProdutos(
             @Query("local_id") Integer localId,
