@@ -51,5 +51,6 @@ public class CachePrefs {
 
     public long getLastListaProdutosSync(int listaId) {
         return prefs.getLong("last_lista_" + listaId + "_sync", 0);
+    public void setSelectedLocalId(int localId) {
     }
 }

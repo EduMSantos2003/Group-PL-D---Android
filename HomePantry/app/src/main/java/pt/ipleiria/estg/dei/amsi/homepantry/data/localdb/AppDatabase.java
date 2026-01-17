@@ -10,8 +10,9 @@ import androidx.room.RoomDatabase;
         StockCacheEntity.class,
         ProdutoCacheEntity.class,
         ListaCacheEntity.class,
-        ListaProdutoCacheEntity.class
-}, version = 4, exportSchema = false)
+        ListaProdutoCacheEntity.class,
+        LocalCacheEntity.class
+}, version = 5, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -24,6 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ListaProdutoCacheDao listaProdutoCacheDao();
     public abstract ProdutoCacheDao produtoCacheDao();
+    public abstract LocalCacheDao localCacheDao();
 
     public static synchronized AppDatabase getInstance(Context context) {
         if (instance == null) {
